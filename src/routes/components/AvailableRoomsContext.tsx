@@ -27,6 +27,7 @@ export function AvailableRoomsContextProvider({ children }: AvailableRoomsContex
 
         EventSourceRef.current = new EventSource(`${BACKEND_URL}/api/roomSSE`);
 
+
         EventSourceRef.current.onopen = () => {
             console.log(`EventSource opened`);
             setStatus('listening');

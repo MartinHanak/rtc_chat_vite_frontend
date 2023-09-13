@@ -1,7 +1,12 @@
+import { Typography } from "@mui/material";
+import RoomCatalog from "./components/RoomCatalog";
+
 export default function HomePageRoute() {
     return (
         <>
-            Hello world
+            <Typography variant="h2">Select or create a new room</Typography>
+
+            <RoomCatalog />
         </>
     );
 }
