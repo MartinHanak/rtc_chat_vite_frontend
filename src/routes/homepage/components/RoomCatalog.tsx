@@ -8,7 +8,7 @@ export default function RoomCatalog() {
 
     const [selectedRoomType, setSelectedRoomType] = useState<RoomType[]>(["video", "audio", "text"]);
 
-    function handleSelectionChange(event: React.MouseEvent<HTMLElement>, input: RoomType[]) {
+    function handleSelectionChange(_event: React.MouseEvent<HTMLElement>, input: RoomType[]) {
         setSelectedRoomType(input);
     }
 

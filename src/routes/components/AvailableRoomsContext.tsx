@@ -11,6 +11,7 @@ interface AvailableRoomsContextValue {
 
 const AvailableRoomsContext = createContext<AvailableRoomsContextValue>({ rooms: [], status: 'loading' });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAvailableRoomsContext = () => useContext(AvailableRoomsContext);
 
 interface AvailableRoomsContextProvider {
