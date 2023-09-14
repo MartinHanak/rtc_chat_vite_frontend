@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Grid } from "@mui/material";
 import { useAvailableRoomsContext } from "../../components/AvailableRoomsContext";
 import { RoomType } from "../../../types/room";
 import NewRoomCard from "./NewRoomCard";
@@ -16,11 +16,15 @@ export default function RoomList({ selectedTypes }: RoomList) {
     const roomTypeDisplayOrder: RoomType[] = ['video', 'audio', 'text'];
 
     return (
-        <Box>
-            <NewRoomCard />
+        <Grid container spacing={2}>
+            <Grid item xs="auto">
+                <NewRoomCard />
+            </Grid>
 
             {status === 'loading' ?
-                <LoadingRoomCard />
+                <Grid item xs="auto">
+                    <LoadingRoomCard />
+                </Grid>
                 :
                 <>
                     {roomTypeDisplayOrder.map((type) => {
@@ -28,12 +32,16 @@ export default function RoomList({ selectedTypes }: RoomList) {
 
                             return rooms
                                 .filter((room) => room.type === type)
-                                .map((room) => <RoomCard key={room.name} room={room} />);
+                                .map((room) => (
+                                    <Grid item xs="auto" key={room.name}>
+                                        <RoomCard room={room} />
+                                    </Grid>
+                                ));
 
                         }
                     })}
                 </>
             }
-        </Box>
+        </Grid>
     );
 }

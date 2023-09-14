@@ -8,14 +8,12 @@ export default function Root() {
     return (
         <AvailableRoomsContextProvider>
             <MyThemeProvider>
-                <Container>
-                    <main>
+                <Container component={"main"}>
 
-                        <Typography variant="h1">Root for all routes</Typography>
+                    <Typography variant="h1">Root for all routes</Typography>
 
-                        <Outlet />
+                    <Outlet />
 
-                    </main>
                 </Container>
             </MyThemeProvider>
         </AvailableRoomsContextProvider>
