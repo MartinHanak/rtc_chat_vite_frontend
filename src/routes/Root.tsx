@@ -3,23 +3,26 @@ import { AvailableRoomsContextProvider } from "./components/AvailableRoomsContex
 import MyThemeProvider from "./components/theme/ThemeProvider";
 import { Container, Typography } from "@mui/material";
 import Header from "./components/Header";
+import { LocalSettingsProvider } from "./components/LocalSettingsContext";
 
 export default function Root() {
 
     return (
         <AvailableRoomsContextProvider>
-            <MyThemeProvider>
-                <Container>
-                    <Header />
+            <LocalSettingsProvider>
+                <MyThemeProvider>
+                    <Container>
+                        <Header />
 
-                    <main>
-                        <Typography variant="h1">Root for all routes</Typography>
+                        <main>
+                            <Typography variant="h1">Root for all routes</Typography>
 
-                        <Outlet />
-                    </main>
+                            <Outlet />
+                        </main>
 
-                </Container>
-            </MyThemeProvider>
+                    </Container>
+                </MyThemeProvider>
+            </LocalSettingsProvider>
         </AvailableRoomsContextProvider>
     );
 }
