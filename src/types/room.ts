@@ -1,5 +1,7 @@
 export type RoomType = "video" | "audio" | "text";
 
+export const roomTypes: RoomType[] = ["video", "audio", "text"];
+
 export interface Room {
   name: string;
   type: RoomType;

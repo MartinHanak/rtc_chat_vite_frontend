@@ -1,7 +1,7 @@
-import { Breadcrumbs, Stack, Link, Box } from "@mui/material";
+import { Breadcrumbs, Stack, Link } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import SettingsIcon from '@mui/icons-material/Settings';
+import { LocalSettingsModal } from "./LocalSettingsModal";
 
 export default function Header() {
     const location = useLocation();
@@ -41,9 +41,7 @@ export default function Header() {
             </Breadcrumbs>
 
 
-            <Box>
-                <SettingsIcon />
-            </Box>
+            <LocalSettingsModal />
 
         </Stack>
     );
