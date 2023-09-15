@@ -9,6 +9,7 @@ interface RequiredSettingsContextValue {
 
 const RequiredSettingsContext = createContext<RequiredSettingsContextValue>({ username: '' });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useRequiredSettingsContext = () => useContext(RequiredSettingsContext);
 
 interface RequiredSettingsContext {
