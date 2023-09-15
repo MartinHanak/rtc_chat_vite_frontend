@@ -4,7 +4,7 @@ import { Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents, userInfo } from "../../../../types/socketTypes";
 import { useLocalSettingsContext } from "../../../components/LocalSettingsContext";
 import { initializeSocket } from "../../../../util/initializeSocket";
-import { Box, CircularProgress } from "@mui/material";
+import Loader from "../../../../components/Loader";
 
 interface SocketContextProvider {
     children: React.ReactNode,
@@ -172,9 +172,7 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
             </SocketContext.Provider>
 
             :
-            <Box sx={{ width: 1, height: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <CircularProgress />
-            </Box>
+            <Loader />
         }</>
     );
 
