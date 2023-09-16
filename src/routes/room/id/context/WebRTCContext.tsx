@@ -1,5 +1,4 @@
 import { MutableRefObject, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Room } from "../../../../types/room";
 import { useSocketContext } from "./SocketContext";
 import { useLocalStreamContext } from "./LocalStreamProvider";
 import { ICE_SERVERS } from "../../../../util/config";
@@ -20,10 +19,9 @@ export const useWebRTCContext = () => useContext(WebRTCContext);
 
 interface WebRTCContextProvider {
     children: React.ReactNode,
-    room: Room;
 }
 
-export function WebRTCContextProvider({ children, room }: WebRTCContextProvider) {
+export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
 
     const peerConnectionRef = useRef<Record<string, RTCPeerConnection>>({});
     const peerStreamRef = useRef<Record<string, MediaStream>>({});
@@ -32,7 +30,7 @@ export function WebRTCContextProvider({ children, room }: WebRTCContextProvider)
     const [peerStreamReady, setPeerStreamReady] = useState<string[]>([]);
     const [dataChannelReady, setDataChannelReady] = useState<string[]>([]);
 
-    const { socketRef, users, offers, answers, iceCandidates } = useSocketContext();
+    const { room, socketRef, users, offers, answers, iceCandidates } = useSocketContext();
 
     const { streamRef: localStreamRef } = useLocalStreamContext();
 

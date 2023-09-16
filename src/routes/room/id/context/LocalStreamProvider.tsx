@@ -1,25 +1,27 @@
 import { MutableRefObject, createContext, useContext, useEffect, useRef, useState } from "react";
 import Loader from "../../../../components/Loader";
-import { Room } from "../../../../types/room";
+import { useSocketContext } from "./SocketContext";
 
 interface LocalStreamContextValue {
     streamRef: MutableRefObject<MediaStream | null> | null;
+    streamReady: boolean;
 }
 
-const LocalStreamContext = createContext<LocalStreamContextValue>({ streamRef: null });
+const LocalStreamContext = createContext<LocalStreamContextValue>({ streamRef: null, streamReady: false });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useLocalStreamContext = () => useContext(LocalStreamContext);
 
 interface LocalStreamContext {
     children: React.ReactNode,
-    room: Room;
 }
 
-export function LocalStreamProvider({ children, room }: LocalStreamContext) {
+export function LocalStreamProvider({ children }: LocalStreamContext) {
 
     const streamRef = useRef<MediaStream | null>(null);
     const [streamReady, setStreamReady] = useState(false);
+
+    const { room } = useSocketContext();
 
     let video = false;
     let audio = false;
@@ -83,7 +85,7 @@ export function LocalStreamProvider({ children, room }: LocalStreamContext) {
 
     // WebRTC context needs data from the local stream
     return (
-        <LocalStreamContext.Provider value={{ streamRef }}>
+        <LocalStreamContext.Provider value={{ streamRef, streamReady }}>
             {streamReady ? children : <Loader />}
         </LocalStreamContext.Provider>
     );

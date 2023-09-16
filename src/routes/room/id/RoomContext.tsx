@@ -14,8 +14,8 @@ export default function RoomContext({ children, room }: RoomContext) {
     return (
         <RequiredSettingsProvider>
             <SocketContextProvider room={room}>
-                <LocalStreamProvider room={room}>
-                    <WebRTCContextProvider room={room}>
+                <LocalStreamProvider >
+                    <WebRTCContextProvider>
                         {children}
                     </WebRTCContextProvider>
                 </LocalStreamProvider>

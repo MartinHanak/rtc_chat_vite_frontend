@@ -19,7 +19,7 @@ type messageData = {
 };
 
 interface SocketContextValue {
-    roomId: string,
+    room: Room,
     socketRef: MutableRefObject<Socket<ServerToClientEvents, ClientToServerEvents> | null> | null,
     users: userInfo[],
 
@@ -31,7 +31,7 @@ interface SocketContextValue {
 }
 
 
-const SocketContext = createContext<SocketContextValue>({ roomId: '', socketRef: null, users: [], offers: {}, answers: {}, iceCandidates: {}, messages: [] });
+const SocketContext = createContext<SocketContextValue>({ room: { name: 'loading', type: 'video', createdAt: 0 }, socketRef: null, users: [], offers: {}, answers: {}, iceCandidates: {}, messages: [] });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useSocketContext = () => useContext(SocketContext);
@@ -167,7 +167,7 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
 
     return (
         <>{connectedUsers.length > 0 ?
-            <SocketContext.Provider value={{ roomId: room.name, socketRef, users: connectedUsers, offers, answers, iceCandidates, messages }}>
+            <SocketContext.Provider value={{ room, socketRef, users: connectedUsers, offers, answers, iceCandidates, messages }}>
                 {children}
             </SocketContext.Provider>
 
