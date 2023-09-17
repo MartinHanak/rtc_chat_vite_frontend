@@ -34,7 +34,6 @@ export function TextChat() {
 
             <Box component="form" onSubmit={handleSendMessage}>
                 <TextField id="text-message-input" label="Message" variant="outlined"
-                    multiline rows={2}
                     value={input} onChange={(e) => setInput(e.target.value)} />
 
                 <Button type="submit"> Send </Button>

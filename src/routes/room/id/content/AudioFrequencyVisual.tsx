@@ -1,0 +1,121 @@
+import { Box } from "@mui/material";
+import { useEffect, useRef } from "react";
+
+interface AudioFrequencyVisual {
+    stream: MediaStream;
+}
+
+export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
+
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+        if (!canvasRef || !canvasRef.current) {
+            return;
+        }
+
+        // setup audio analyser
+        const audioCtx = new AudioContext();
+        const analyser = audioCtx.createAnalyser();
+
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        analyser.minDecibels = -90;
+        analyser.maxDecibels = -10;
+        analyser.fftSize = 128;
+        analyser.smoothingTimeConstant = 0.85;
+
+        const bufferLength = analyser.frequencyBinCount; // half the fftSize
+        const dataArray = new Float32Array(bufferLength);
+
+
+        // start requestAnimationFrame loop
+        const canvasCtx = canvasRef.current.getContext("2d");
+        const WIDTH = canvasRef.current.width;
+        const HEIGHT = canvasRef.current.height;
+
+        let requestFrameId = 0;
+        let minDb = -140;
+        let maxDb = -120;
+        let noiseAverage = -90;
+
+        function draw() {
+            requestFrameId = window.requestAnimationFrame(draw);
+
+            if (!canvasCtx) {
+                throw new Error(`2D canvas context could not be created`);
+            }
+
+            // reset previous frame 
+            canvasCtx.fillStyle = "rgb(255, 255, 255)";
+            canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            // load new data into dataArray
+            analyser.getFloatFrequencyData(dataArray);
+
+            const barWidth = (WIDTH / bufferLength) * 0.5;
+            let barHeight;
+            let x = WIDTH / 2 - barWidth / 2;
+
+
+            // minimum is continuously reset (for noise)
+            // maximum is set as an overall maximum
+            let newMinDb = 100;
+            let newMaxDb = maxDb;
+            let newNoiseAverage = 0;
+            let newNoiseAverageCount = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                // update range for the next frame
+                // minimum taken only around the center (low Db values)
+                if (dataArray[i] < newMinDb && i < bufferLength / 3) {
+                    newMinDb = dataArray[i];
+                }
+                if (dataArray[i] > newMaxDb) {
+                    newMaxDb = dataArray[i];
+                }
+                if (i > bufferLength / 4 && i < bufferLength / 2) {
+                    newNoiseAverage += dataArray[i];
+                    newNoiseAverageCount += 1;
+                }
+
+                //console.log(dataArray[i]);
+                // values are in dB, low volume = approx - 140 dB
+                // scaled value between 0 and 1 * HEIGHT
+                barHeight = Math.min(1, Math.max(0,
+                    (dataArray[i] - (- 90)) / (maxDb - minDb)
+                )) * HEIGHT;
+
+                canvasCtx.fillStyle = "rgb(" + Math.floor(barHeight) + ",50,50)";
+                canvasCtx.fillRect(x, (HEIGHT - barHeight) / 2, barWidth, barHeight);
+                if (i > 0) {
+                    canvasCtx.fillRect(WIDTH - x, (HEIGHT - barHeight) / 2, barWidth, barHeight);
+                }
+
+                x += barWidth + 1;
+            }
+
+            newNoiseAverage = newNoiseAverage / newNoiseAverageCount;
+
+            noiseAverage = newNoiseAverage;
+            minDb = newMinDb;
+            maxDb = newMaxDb;
+
+        }
+
+        requestFrameId = window.requestAnimationFrame(draw);
+
+        return () => {
+            window.cancelAnimationFrame(requestFrameId);
+        };
+
+    }, [stream]);
+
+
+    return (
+        <Box>
+            <canvas ref={canvasRef} width={500} height={200} />
+        </Box>
+    );
+}
