@@ -21,6 +21,10 @@ export function LocalStreamProvider({ children }: LocalStreamContext) {
     const streamRef = useRef<MediaStream | null>(null);
     const [streamReady, setStreamReady] = useState(false);
 
+    // used to check if promise for streamRef already started 
+    // solves issues with React strict mode double-rendering
+    const promiseStarted = useRef(false);
+
     const { room } = useSocketContext();
 
     let video = false;
@@ -48,14 +52,14 @@ export function LocalStreamProvider({ children }: LocalStreamContext) {
 
                 // check if stream already set
                 // otherwise issues with double-render react strict mode
-                if (streamRef && streamRef.current) {
+                if (promiseStarted.current) {
                     console.log(`Local stream already set`);
                 } else {
+                    promiseStarted.current = true;
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: audio, video: video });
                     streamRef.current = stream;
                     setStreamReady(true);
                 }
-
             } catch (error) {
                 console.log(error);
             }
@@ -72,6 +76,7 @@ export function LocalStreamProvider({ children }: LocalStreamContext) {
             console.log(`Local stream cleanup.`);
             if (streamRef.current) {
                 streamRef.current.getTracks().forEach((track) => track.stop());
+                streamRef.current = null;
             } else {
                 console.log(`No stream or stream.current when local stream cleanup happened.`);
             }

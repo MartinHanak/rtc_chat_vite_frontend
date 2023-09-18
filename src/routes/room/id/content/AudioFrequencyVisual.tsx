@@ -38,7 +38,7 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
         let requestFrameId = 0;
         let minDb = -140;
         let maxDb = -120;
-        let noiseAverage = -90;
+        //let noiseAverage = -90;
 
         function draw() {
             requestFrameId = window.requestAnimationFrame(draw);
@@ -54,7 +54,8 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
             // load new data into dataArray
             analyser.getFloatFrequencyData(dataArray);
 
-            const barWidth = (WIDTH / bufferLength) * 0.5;
+            const barWidth = (WIDTH / bufferLength) * 1;
+            const spaceBetweenBars = barWidth * 0.5;
             let barHeight;
             let x = WIDTH / 2 - barWidth / 2;
 
@@ -63,8 +64,8 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
             // maximum is set as an overall maximum
             let newMinDb = 100;
             let newMaxDb = maxDb;
-            let newNoiseAverage = 0;
-            let newNoiseAverageCount = 0;
+            //let newNoiseAverage = 0;
+            //let newNoiseAverageCount = 0;
 
             for (let i = 0; i < bufferLength; i++) {
                 // update range for the next frame
@@ -75,10 +76,12 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
                 if (dataArray[i] > newMaxDb) {
                     newMaxDb = dataArray[i];
                 }
+                /*
                 if (i > bufferLength / 4 && i < bufferLength / 2) {
                     newNoiseAverage += dataArray[i];
                     newNoiseAverageCount += 1;
                 }
+                */
 
                 //console.log(dataArray[i]);
                 // values are in dB, low volume = approx - 140 dB
@@ -87,18 +90,34 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
                     (dataArray[i] - (- 90)) / (maxDb - minDb)
                 )) * HEIGHT;
 
+                canvasCtx.strokeStyle = "rgb(" + Math.floor(barHeight) + ",50,50)";
+                canvasCtx.fillStyle = "rgb(" + Math.floor(barHeight) + ",50,50)";
+                canvasCtx.beginPath();
+                canvasCtx.roundRect(x, (HEIGHT - barHeight) / 2, barWidth, barHeight, 50);
+                canvasCtx.stroke();
+                canvasCtx.fill();
+                if (i > 0) {
+                    canvasCtx.beginPath();
+                    canvasCtx.roundRect(WIDTH - x - barWidth, (HEIGHT - barHeight) / 2, barWidth, barHeight, 50);
+                    canvasCtx.stroke();
+                    canvasCtx.fill();
+                }
+
+                /*
                 canvasCtx.fillStyle = "rgb(" + Math.floor(barHeight) + ",50,50)";
                 canvasCtx.fillRect(x, (HEIGHT - barHeight) / 2, barWidth, barHeight);
                 if (i > 0) {
                     canvasCtx.fillRect(WIDTH - x, (HEIGHT - barHeight) / 2, barWidth, barHeight);
                 }
 
-                x += barWidth + 1;
+                */
+
+                x += barWidth + spaceBetweenBars;
             }
 
-            newNoiseAverage = newNoiseAverage / newNoiseAverageCount;
+            //newNoiseAverage = newNoiseAverage / newNoiseAverageCount;
 
-            noiseAverage = newNoiseAverage;
+            //noiseAverage = newNoiseAverage;
             minDb = newMinDb;
             maxDb = newMaxDb;
 
