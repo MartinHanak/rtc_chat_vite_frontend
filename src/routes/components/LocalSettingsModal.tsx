@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, Modal } from "@mui/material";
+import Settings from "./settings/Settings";
 
 
 export function LocalSettingsModal() {
@@ -32,12 +33,8 @@ export function LocalSettingsModal() {
                     boxShadow: 24,
                     p: 4,
                 }}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Text in a modal
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                    </Typography>
+
+                    <Settings closeModal={handleClose} />
                 </Box>
             </Modal>
         </>

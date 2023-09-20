@@ -1,11 +1,17 @@
-import { createContext, useContext, useState } from "react";
+import { Theme, createTheme } from "@mui/material";
+import { createContext, useContext } from "react";
+import useLocalStorageUsername from "../../hooks/useLocalStorageUsername";
+import useColorTheme from "../../hooks/useColorTheme";
 
 interface LocalSettingsContextValue {
     username: string;
     changeUsername: (input: string) => void;
+    mode: 'light' | 'dark';
+    toggleColorTheme: () => void;
+    theme: Theme;
 }
 
-const LocalSettingsContext = createContext<LocalSettingsContextValue>({ username: '', changeUsername: () => { } });
+const LocalSettingsContext = createContext<LocalSettingsContextValue>({ username: '', changeUsername: () => { }, mode: 'light', toggleColorTheme: () => { }, theme: createTheme() });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useLocalSettingsContext = () => useContext(LocalSettingsContext);
@@ -18,26 +24,12 @@ interface LocalSettingsContext {
 
 export function LocalSettingsProvider({ children }: LocalSettingsContext) {
 
-    const [username, setUsername] = useState(() => getStorageUsername());
+    const { username, changeUsername } = useLocalStorageUsername();
 
-
-    function getStorageUsername() {
-        const storedUsername = localStorage.getItem('username');
-
-        if (!storedUsername) {
-            return "";
-        } else {
-            return storedUsername;
-        }
-    }
-
-    function setAndStoreUsername(input: string) {
-        localStorage.setItem('username', input);
-        setUsername(input);
-    }
+    const { theme, mode, toggleColorTheme } = useColorTheme();
 
     return (
-        <LocalSettingsContext.Provider value={{ username, changeUsername: setAndStoreUsername }}>
+        <LocalSettingsContext.Provider value={{ username, changeUsername, theme, mode, toggleColorTheme }}>
             {children}
         </LocalSettingsContext.Provider>
     );
