@@ -1,4 +1,4 @@
-import { Box, CardActionArea, CardContent, Typography } from "@mui/material";
+import { Box, BoxProps, CardActionArea, CardContent, PaletteColor, Typography, styled } from "@mui/material";
 import { Room, RoomType } from "../../../types/room";
 import RoomCardContainer from "./RoomCardContainer";
 
@@ -9,10 +9,43 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const typeToIcon: Record<RoomType, React.ReactNode> = {
-    'video': <VideoChatIcon sx={{ fontSize: 80 }} />,
-    'audio': <VoiceChatIcon sx={{ fontSize: 80 }} />,
-    'text': <ChatIcon sx={{ fontSize: 80 }} />
+    'video': <VideoChatIcon sx={{ fontSize: 80, color: "primary.dark", backgroundColor: 'white' }} />,
+    'audio': <VoiceChatIcon sx={{ fontSize: 80, color: "secondary.dark" }} />,
+    'text': <ChatIcon sx={{ fontSize: 80, color: "tertiary.dark" }} />
 };
+
+interface StyledRoomCardHeaderProps extends BoxProps {
+    roomType: RoomType;
+}
+
+const StyledRoomCardHeader = styled(Box, {
+    shouldForwardProp: (prop) => prop !== 'roomType',
+})<StyledRoomCardHeaderProps>(
+    ({ roomType, theme }) => {
+
+        let color: PaletteColor;
+        switch (roomType) {
+            case 'video':
+                color = theme.palette['primary'];
+                break;
+            case 'audio':
+                color = theme.palette['secondary'];
+                break;
+            default:
+                color = theme.palette['tertiary'];
+                break;
+        }
+
+        return {
+            padding: theme.spacing(2),
+            margin: `${theme.spacing(1)} ${theme.spacing(1)} 0 ${theme.spacing(1)}`,
+            borderRadius: theme.shape.borderRadius,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: color.light
+        };
+    });
 
 interface RoomCard {
     room: Room;
@@ -29,11 +62,11 @@ export default function RoomCard({ room }: RoomCard) {
 
     return (
         <RoomCardContainer>
-            <CardActionArea onClick={handleRoomCardClick} sx={{ width: '100%', height: '100%' }}>
+            <CardActionArea onClick={handleRoomCardClick} sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'stretch' }}>
 
-                <Box sx={{ minHeight: '33%', height: '33%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <StyledRoomCardHeader roomType={room.type}>
                     {room.type && typeToIcon[room.type]}
-                </Box>
+                </StyledRoomCardHeader>
 
                 <CardContent>
                     <Typography>{room.name}</Typography>
