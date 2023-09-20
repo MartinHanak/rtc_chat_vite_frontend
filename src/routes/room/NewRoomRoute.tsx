@@ -8,6 +8,7 @@ export default function NewRoomRoute() {
 
     const [name, setName] = useState<string>('');
     const [type, setType] = useState<RoomType>('video');
+    const [description, setDescription] = useState<string>('');
 
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
@@ -40,7 +41,8 @@ export default function NewRoomRoute() {
             },
             body: JSON.stringify({
                 name: encodeURIComponent(inputName),
-                type
+                type,
+                description
             })
         }).then((res) => {
             if (res.ok) {
@@ -102,6 +104,8 @@ export default function NewRoomRoute() {
                         <MenuItem value={"text"}>Text</MenuItem>
                     </Select>
                 </FormControl>
+
+                <TextField label="Description" multiline rows={4} value={description} onChange={(e) => setDescription(e.target.value)} />
 
                 <Button type="submit"> Confirm </Button>
             </Box>
