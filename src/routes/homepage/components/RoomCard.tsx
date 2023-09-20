@@ -9,7 +9,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const typeToIcon: Record<RoomType, React.ReactNode> = {
-    'video': <VideoChatIcon sx={{ fontSize: 80, color: "primary.dark", backgroundColor: 'white' }} />,
+    'video': <VideoChatIcon sx={{ fontSize: 80, color: "primary.dark" }} />,
     'audio': <VoiceChatIcon sx={{ fontSize: 80, color: "secondary.dark" }} />,
     'text': <ChatIcon sx={{ fontSize: 80, color: "tertiary.dark" }} />
 };
@@ -70,6 +70,7 @@ export default function RoomCard({ room }: RoomCard) {
 
                 <CardContent>
                     <Typography>{room.name}</Typography>
+                    <Typography>{room.description}</Typography>
                 </CardContent>
 
             </CardActionArea>

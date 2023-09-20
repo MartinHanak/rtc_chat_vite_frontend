@@ -5,6 +5,7 @@ export const roomTypes: RoomType[] = ["video", "audio", "text"];
 export interface Room {
   name: string;
   type: RoomType;
+  description: string;
   createdAt: number;
 }
 
@@ -14,8 +15,10 @@ export function isRoom(input: unknown): input is Room {
     input !== null &&
     "name" in input &&
     "type" in input &&
+    "description" in input &&
     "createdAt" in input &&
     typeof input.name === "string" &&
+    typeof input.description === "string" &&
     typeof input.type === "string" &&
     (input.type === "video" ||
       input.type === "audio" ||
