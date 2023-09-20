@@ -1,6 +1,22 @@
-import { Alert, Button, FormControl, Snackbar, TextField } from "@mui/material";
+import { Alert, Box, Button, FormControl, Modal, Snackbar, TextField } from "@mui/material";
 import { useLocalSettingsContext } from "../LocalSettingsContext";
 import { FormEvent, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+const style = {
+    position: 'absolute' as const,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+};
+
 
 export default function UsernameSettings() {
 
@@ -9,12 +25,23 @@ export default function UsernameSettings() {
     const [inputUsername, setInputUsername] = useState<string>(username);
     const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
 
+    const location = useLocation();
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('submitting');
-        if (inputUsername !== username) {
-            changeUsername(inputUsername);
-            setOpenSnackbar(true);
+        const pattern = /^\/room\/(.+)$/;
+
+        const match = location.pathname.match(pattern);
+
+        // require confirmation if currently in a room
+        if (match) {
+            setOpenConfirmation(true);
+        } else {
+            if (inputUsername !== username) {
+                changeUsername(inputUsername);
+                setOpenSnackbar(true);
+            }
         }
     };
 
@@ -24,6 +51,12 @@ export default function UsernameSettings() {
         }
 
         setOpenSnackbar(false);
+    };
+
+    const handleConfirmation = () => {
+        changeUsername(inputUsername);
+        setOpenSnackbar(true);
+        setOpenConfirmation(false);
     };
 
     return (
@@ -44,6 +77,19 @@ export default function UsernameSettings() {
                     Username changed!
                 </Alert>
             </Snackbar>
+
+
+            <Modal
+                open={openConfirmation}
+                onClose={() => setOpenConfirmation(false)}
+            >
+                <Box sx={{ ...style, width: 400 }}>
+                    <p>Changing username while connected to a room will reload your connection.</p>
+                    <p>Do you wish to continue?</p>
+                    <Button onClick={handleConfirmation}>Confirm</Button>
+                    <Button onClick={() => setOpenConfirmation(false)}>Cancel</Button>
+                </Box>
+            </Modal>
 
         </FormControl>
     );
