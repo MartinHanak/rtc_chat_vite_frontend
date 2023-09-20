@@ -48,8 +48,8 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
             }
 
             // reset previous frame 
-            canvasCtx.fillStyle = "rgb(255, 255, 255)";
-            canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+            canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
 
             // load new data into dataArray
             analyser.getFloatFrequencyData(dataArray);

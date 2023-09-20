@@ -1,6 +1,6 @@
 import { PaletteMode, createTheme } from "@mui/material";
 import { useMemo, useState } from "react";
-import theme from "../routes/components/theme/theme";
+import getDesignTokens from "../routes/components/theme/theme";
 
 export default function useColorTheme() {
   const [mode, setMode] = useState<PaletteMode>("light");
@@ -10,17 +10,7 @@ export default function useColorTheme() {
   };
 
   const modifiedTheme = useMemo(() => {
-    const newTheme = createTheme({
-      ...theme,
-      palette: {
-        ...theme.palette,
-        mode,
-      },
-    });
-
-    console.log(newTheme);
-
-    return newTheme;
+    return createTheme(getDesignTokens(mode));
   }, [mode]);
 
   return {
