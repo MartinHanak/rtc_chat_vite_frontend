@@ -1,34 +1,56 @@
-import { ToggleButton, ToggleButtonGroup, styled } from "@mui/material";
+import { PaletteColor, ToggleButton, ToggleButtonGroup, ToggleButtonProps, styled } from "@mui/material";
 import { RoomType } from "../../../types/room";
-import { deepOrange } from "@mui/material/colors";
 
 interface RoomTypeSelection {
     selected: RoomType[],
     setSelection: (event: React.MouseEvent<HTMLElement>, input: RoomType[]) => void;
 }
 
-const RoomTypeToggleButton = styled(ToggleButton)({
-    '&.MuiToggleButtonGroup-grouped': {
-        backgroundColor: deepOrange[800],
-        borderRadius: '50px',
-        '&:Mui-disabled': {
-            backgroundColor: deepOrange[100]
-        },
-        '&.Mui-selected': {
-            backgroundColor: deepOrange[800]
-        },
-        '&:hover': {
-            backgroundColor: deepOrange[800]
-        },
-        '&:not(:last-of-type)': {
-            borderRadius: '50px',
-        },
-        '&:not(:first-of-type)': {
-            borderRadius: '50px',
-        }
-    }
+interface RoomTypeToggleButtonProps extends ToggleButtonProps {
+    roomType: RoomType;
+}
 
-});
+
+const RoomTypeToggleButton = styled(ToggleButton, {
+    shouldForwardProp: (prop) => prop !== 'roomType',
+})<RoomTypeToggleButtonProps>(
+    ({ roomType, theme }) => {
+
+        let color: PaletteColor;
+        switch (roomType) {
+            case 'video':
+                color = theme.palette['primary'];
+                break;
+            case 'audio':
+                color = theme.palette['secondary'];
+                break;
+            default:
+                color = theme.palette['tertiary'];
+                break;
+        }
+
+        return {
+            '&.MuiToggleButtonGroup-grouped': {
+                height: '6rem',
+                '&.Mui-selected': {
+                    backgroundColor: color.main
+                },
+                '&:hover': {
+                    backgroundColor: color.light
+                },
+                '&:not(.Mui-selected):hover': {
+                    backgroundColor: theme.palette.grey[100]
+                },
+                '&:not(:last-of-type)': {
+                    borderRadius: '10px 10px 0 0',
+                },
+                '&:not(:first-of-type)': {
+                    borderRadius: '10px 10px 0 0',
+                }
+            }
+
+        };
+    });
 
 export default function RoomTypeSelection({ selected, setSelection }: RoomTypeSelection) {
 
@@ -43,7 +65,7 @@ export default function RoomTypeSelection({ selected, setSelection }: RoomTypeSe
 
             {Object.entries(typeToDisplayedText).map(([type, displayText]) => {
                 return (
-                    <RoomTypeToggleButton key={type} value={type} aria-label={type} >
+                    <RoomTypeToggleButton key={type} value={type} roomType={type as RoomType} aria-label={type} >
                         {displayText}
                     </RoomTypeToggleButton>
                 );
