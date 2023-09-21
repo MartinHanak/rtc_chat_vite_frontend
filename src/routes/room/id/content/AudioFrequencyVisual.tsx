@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { useEffect, useRef } from "react";
+import { useLocalSettingsContext } from "../../../components/LocalSettingsContext";
 
 interface AudioFrequencyVisual {
     stream: MediaStream;
@@ -8,6 +9,7 @@ interface AudioFrequencyVisual {
 export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { mode } = useLocalSettingsContext();
 
     useEffect(() => {
         if (!canvasRef || !canvasRef.current) {
@@ -90,8 +92,13 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
                     (dataArray[i] - (- 90)) / (maxDb - minDb)
                 )) * HEIGHT;
 
-                canvasCtx.strokeStyle = "rgb(" + Math.floor(barHeight) + ",50,50)";
-                canvasCtx.fillStyle = "rgb(" + Math.floor(barHeight) + ",50,50)";
+                const barColor = mode === 'light' ?
+                    `rgb(${Math.floor(barHeight)},0,0)`
+                    :
+                    `rgb(${255 - Math.floor(barHeight) * 2},255,255)`;
+
+                canvasCtx.strokeStyle = barColor;//"rgb(" + Math.floor(barHeight) + ",50,50)";
+                canvasCtx.fillStyle = barColor;// "rgb(" + Math.floor(barHeight) + ",50,50)";
                 canvasCtx.beginPath();
                 canvasCtx.roundRect(x, (HEIGHT - barHeight) / 2, barWidth, barHeight, 50);
                 canvasCtx.stroke();
@@ -129,7 +136,7 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
             window.cancelAnimationFrame(requestFrameId);
         };
 
-    }, [stream]);
+    }, [stream, mode]);
 
 
     return (
