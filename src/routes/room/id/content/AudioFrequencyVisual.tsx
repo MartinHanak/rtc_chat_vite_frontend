@@ -97,8 +97,8 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
                     :
                     `rgb(${255 - Math.floor(barHeight) * 2},255,255)`;
 
-                canvasCtx.strokeStyle = barColor;//"rgb(" + Math.floor(barHeight) + ",50,50)";
-                canvasCtx.fillStyle = barColor;// "rgb(" + Math.floor(barHeight) + ",50,50)";
+                canvasCtx.strokeStyle = barColor;
+                canvasCtx.fillStyle = barColor;
                 canvasCtx.beginPath();
                 canvasCtx.roundRect(x, (HEIGHT - barHeight) / 2, barWidth, barHeight, 50);
                 canvasCtx.stroke();

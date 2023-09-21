@@ -1,4 +1,4 @@
-import { Box, BoxProps, CardActionArea, CardContent, PaletteColor, Typography, styled } from "@mui/material";
+import { Box, BoxProps, CardActionArea, PaletteColor, styled } from "@mui/material";
 import { Room, RoomType } from "../../../types/room";
 import RoomCardContainer from "./RoomCardContainer";
 
@@ -7,6 +7,7 @@ import VideoChatIcon from '@mui/icons-material/VideoChat';
 import VoiceChatIcon from '@mui/icons-material/VoiceChat';
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import RoomCardContent from "./RoomCardContent";
 
 const typeToIcon: Record<RoomType, React.ReactNode> = {
     'video': <VideoChatIcon sx={{ fontSize: 80, color: "primary.dark" }} />,
@@ -68,10 +69,7 @@ export default function RoomCard({ room }: RoomCard) {
                     {room.type && typeToIcon[room.type]}
                 </StyledRoomCardHeader>
 
-                <CardContent>
-                    <Typography>{room.name}</Typography>
-                    <Typography>{room.description}</Typography>
-                </CardContent>
+                <RoomCardContent name={room.name} description={room.description} />
 
             </CardActionArea>
         </RoomCardContainer>
