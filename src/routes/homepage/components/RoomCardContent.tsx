@@ -1,4 +1,4 @@
-import { Box, Button, CardContent, Collapse, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Collapse, Typography } from "@mui/material";
 import { useState, MouseEvent } from "react";
 
 interface RoomCardContent {
@@ -9,8 +9,10 @@ interface RoomCardContent {
 export default function RoomCardContent({ name, description }: RoomCardContent) {
     const [expandHorizontal, setExpandHorizontal] = useState(false);
     const [expandVertical, setExpandVertical] = useState(false);
+    const [shift, setShift] = useState(false);
 
-    const toggleCollapse = (e: MouseEvent<HTMLButtonElement>) => {
+    const toggleCollapse = (e: MouseEvent<HTMLDivElement>) => {
+        console.log('Toggle collapse');
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
         setExpandHorizontal((prev) => !prev);
@@ -18,16 +20,37 @@ export default function RoomCardContent({ name, description }: RoomCardContent) 
 
 
     return (
-        <CardContent sx={{ position: 'relative', overflow: 'visible' }}>
+        <CardContent sx={{ position: 'relative', overflow: 'visible', width: 1, height: 1 }}>
 
 
 
-            <Collapse in={expandHorizontal} collapsedSize={'50px'} orientation={"horizontal"}
-                addEndListener={() => setExpandVertical((prev) => !prev)}>
-                <Collapse in={expandVertical} collapsedSize={'50px'} orientation={"vertical"}>
+            <Collapse in={expandHorizontal} collapsedSize={'100%'} orientation={"horizontal"}
+                component={Card}
+                addEndListener={() => setExpandVertical((prev) => !prev)}
+                sx={{
+                    position: 'absolute', top: theme => theme.spacing(0),
+                    left: shift ? '-20px' : theme => theme.spacing(0),
+                    zIndex: shift ? 999 : 10,
+                    boxShadow: shift ? theme => theme.shadows[1] : 'none',
+                }}
+            >
 
-                    <Box sx={{ position: 'absolute', top: theme => theme.spacing(2), left: theme => theme.spacing(2), width: '500px', height: '200px', overflow: 'hidden', backgroundColor: 'white', zIndex: 10 }}>
-                        <Button onClick={toggleCollapse}>Toggle expand</Button>
+                <Collapse in={expandVertical} collapsedSize={'80px'} orientation={"vertical"} timeout={500}
+                    addEndListener={() => setShift((prev) => !prev)}
+                >
+
+
+                    <Box sx={{
+                        width: '200px', height: '200px',
+                        backgroundColor: theme => theme.palette.background.paper,
+                        zIndex: 10,
+                        paddingX: theme => theme.spacing(2),
+                        paddingTop: theme => theme.spacing(1),
+                        paddingBottom: theme => theme.spacing(2),
+                        marginTop: theme => theme.spacing(1),
+                        borderRadius: theme => theme.shape.borderRadius
+                    }}>
+                        <Button component="div" onClick={toggleCollapse}>Toggle expand</Button>
                         <Typography sx={{}}>{name}</Typography>
                         <Typography sx={{}}>{description}</Typography>
                     </Box>
