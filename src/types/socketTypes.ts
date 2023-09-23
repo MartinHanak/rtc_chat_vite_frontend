@@ -1,7 +1,4 @@
-export interface userInfo {
-  socketId: string;
-  username: string;
-}
+import { userInfo } from "./user";
 
 export interface ServerToClientEvents {
   // room events

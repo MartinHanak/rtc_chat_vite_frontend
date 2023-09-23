@@ -1,7 +1,8 @@
 import { MutableRefObject, createContext, useContext, useEffect, useRef, useState } from "react";
 import { Room } from "../../../../types/room";
 import { Socket } from "socket.io-client";
-import { ClientToServerEvents, ServerToClientEvents, userInfo } from "../../../../types/socketTypes";
+import { ClientToServerEvents, ServerToClientEvents } from "../../../../types/socketTypes";
+import { userInfo } from "../../../../types/user";
 import { useLocalSettingsContext } from "../../../components/LocalSettingsContext";
 import { initializeSocket } from "../../../../util/initializeSocket";
 import Loader from "../../../../components/Loader";
@@ -31,7 +32,7 @@ interface SocketContextValue {
 }
 
 
-const SocketContext = createContext<SocketContextValue>({ room: { name: 'loading', type: 'video', createdAt: 0 }, socketRef: null, users: [], offers: {}, answers: {}, iceCandidates: {}, messages: [] });
+const SocketContext = createContext<SocketContextValue>({ room: { name: 'loading', type: 'video', createdAt: 0, description: '' }, socketRef: null, users: [], offers: {}, answers: {}, iceCandidates: {}, messages: [] });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useSocketContext = () => useContext(SocketContext);

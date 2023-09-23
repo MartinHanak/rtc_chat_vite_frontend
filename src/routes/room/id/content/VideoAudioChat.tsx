@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { Room } from "../../../../types/room";
 import { Video } from "./Video";
-import { AudioTimeVisual } from "./AudioTimeVisual";
 import { AudioFrequencyVisual } from "./AudioFrequencyVisual";
 
 interface VideoAudioChat {
@@ -17,9 +16,7 @@ export default function VideoAudioChat({ username, room, stream }: VideoAudioCha
 
             {room.type === 'video' && <Video stream={stream} />}
 
-            {null && (room.type === 'video' || room.type === 'audio') && <AudioTimeVisual stream={stream} />}
-
-            {(room.type === 'video' || room.type === 'audio') && <AudioFrequencyVisual stream={stream} />}
+            {room.type === 'audio' && <AudioFrequencyVisual stream={stream} />}
 
         </Box>
     );

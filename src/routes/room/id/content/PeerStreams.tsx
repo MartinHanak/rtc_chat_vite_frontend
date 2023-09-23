@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useWebRTCContext } from "../context/WebRTCContext";
 import { useSocketContext } from "../context/SocketContext";
-import { userInfo } from "../../../../types/socketTypes";
+import { userInfo } from "../../../../types/user";
 import VideoAudioChat from "./VideoAudioChat";
 
 export default function PeerStreams() {
