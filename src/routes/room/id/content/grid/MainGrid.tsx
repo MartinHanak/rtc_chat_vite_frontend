@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material";
 import { combinedUserState } from "../../../../../types/user";
+import VideoAudioChat from "../VideoAudioChat";
 
 interface MainGrid {
     rows: number;
@@ -8,11 +9,24 @@ interface MainGrid {
 }
 
 export default function MainGrid({ rows, columns, streams }: MainGrid) {
+
+    const gridItemWidth = Math.max(1, Math.floor(12 / columns));
+    const maxGridItems = rows * columns;
+
     return (
-        <Grid>
+        <Grid container spacing={2} >
             {Array.from(streams.values()).map((streamInfo, index) => {
+
+                if (index >= maxGridItems) {
+                    return null;
+                }
+
+                // key forces rerender when columns or rows change
                 return (
-                    <div id={streamInfo.socketId}>{streamInfo.username}</div>
+                    <Grid item xs={gridItemWidth} key={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
+                    >
+                        <VideoAudioChat username={streamInfo.username} stream={streamInfo.stream} />
+                    </Grid>
                 );
             })}
         </Grid>

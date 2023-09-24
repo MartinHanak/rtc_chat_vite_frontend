@@ -1,18 +1,23 @@
 import { Box, Typography } from "@mui/material";
-import { Room } from "../../../../types/room";
 import { Video } from "./Video";
 import { AudioFrequencyVisual } from "./AudioFrequencyVisual";
+import { useSocketContext } from "../context/SocketContext";
 
 interface VideoAudioChat {
     username: string;
-    room: Room;
     stream: MediaStream;
 }
 
-export default function VideoAudioChat({ username, room, stream }: VideoAudioChat) {
+export default function VideoAudioChat({ username, stream }: VideoAudioChat) {
+
+    const { room } = useSocketContext();
+
     return (
-        <Box sx={{ resize: 'both', overflow: 'hidden' }}>
-            <Typography variant="h4"> {username} </Typography>
+        <Box sx={{ aspectRatio: '16 / 9', position: 'relative' }}
+        >
+            <Typography variant="h4" sx={{ position: 'absolute', top: '0', right: '0' }}>
+                {username}
+            </Typography>
 
             {room.type === 'video' && <Video stream={stream} />}
 

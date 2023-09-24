@@ -9,7 +9,7 @@ interface RoomComponent {
 export default function Room({ room }: RoomComponent) {
     return (
         <RoomContext room={room}>
-            <RoomContent />
+            <RoomContent room={room} />
         </RoomContext>
     );
 }

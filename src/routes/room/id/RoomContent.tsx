@@ -1,16 +1,18 @@
-import LocalStream from "./content/LocalStream";
-import PeerStreams from "./content/PeerStreams";
+import { Room } from "../../../types/room";
 import { TextChat } from "./content/TextChat";
+import GridView from "./content/grid/GridView";
 
-export default function RoomContent() {
+interface RoomContent {
+    room: Room;
+}
+
+export default function RoomContent({ room }: RoomContent) {
     return (
         <>
             Room content here !
             <TextChat />
 
-            <LocalStream />
-
-            <PeerStreams />
+            {(room.type === 'video' || room.type == 'audio') && <GridView />}
         </>
     );
 }

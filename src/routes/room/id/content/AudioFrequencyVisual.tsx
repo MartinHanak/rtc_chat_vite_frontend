@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useLocalSettingsContext } from "../../../components/LocalSettingsContext";
 
@@ -10,6 +9,21 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { mode } = useLocalSettingsContext();
+
+    // scale canvas width
+    useEffect(() => {
+        if (!canvasRef || !canvasRef.current || !canvasRef.current.parentElement) {
+            return;
+        }
+
+        const containerWidth = canvasRef.current.parentElement.clientWidth;
+        canvasRef.current.width = containerWidth;
+
+        const aspectRatio = 16 / 9;
+        canvasRef.current.height = containerWidth / aspectRatio;
+
+
+    }, []);
 
     useEffect(() => {
         if (!canvasRef || !canvasRef.current) {
@@ -140,8 +154,6 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
 
 
     return (
-        <Box>
-            <canvas ref={canvasRef} width={500} height={200} />
-        </Box>
+        <canvas ref={canvasRef} width={500} height={200} />
     );
 }
