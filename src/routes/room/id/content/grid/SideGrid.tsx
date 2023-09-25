@@ -4,15 +4,16 @@ import VideoAudioChat from "../VideoAudioChat";
 
 interface SideGrid {
     streams: Map<string, combinedUserState>;
+    offset: number;
 }
 
-export default function SideGrid({ streams }: SideGrid) {
+export default function SideGrid({ streams, offset }: SideGrid) {
 
     return (
         <Stack sx={{
             position: "fixed",
             zIndex: 9999,
-            bottom: theme => theme.spacing(2),
+            bottom: `calc(${offset}px + 16px )`,
             left: theme => theme.spacing(2),
             height: "auto", width: '20%',
             display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',

@@ -9,8 +9,7 @@ interface RoomContent {
 export default function RoomContent({ room }: RoomContent) {
     return (
         <>
-            Room content here !
-            <TextChat />
+            {room.type === 'text' && <TextChat />}
 
             {(room.type === 'video' || room.type == 'audio') && <GridView />}
         </>

@@ -5,12 +5,17 @@ import { Box } from "@mui/material";
 import LayoutControls from "./LayoutControls";
 import SideGrid from "./SideGrid";
 import GridDisplayControls from "./GridDisplayControls";
+import useDisplayControls from "./hooks/useDisplayControls";
+import TextChatOverlay from "./TextChatOverlay";
 
 
 export default function GridView() {
 
     // main grid layout
     const { rows, columns, changeColumnsNumber, changeRowsNumber } = useGridLayoutSettings();
+
+    // display controls
+    const { show, height, toggle, setHeight } = useDisplayControls();
 
     const { streams } = useCombinedDisplayStreamState();
 
@@ -21,9 +26,11 @@ export default function GridView() {
 
             <LayoutControls rows={rows} columns={columns} changeRows={changeRowsNumber} changeColumns={changeColumnsNumber} />
 
-            <SideGrid streams={streams} />
+            <SideGrid streams={streams} offset={show ? height + 32 : 32} />
 
-            <GridDisplayControls streams={streams} />
+            <TextChatOverlay offset={show ? height + 32 : 32} />
+
+            <GridDisplayControls streams={streams} setHeight={setHeight} toggle={toggle} show={show} />
         </Box>
     );
 }
