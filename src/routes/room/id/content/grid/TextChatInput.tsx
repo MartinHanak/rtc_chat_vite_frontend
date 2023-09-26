@@ -3,7 +3,11 @@ import SendIcon from '@mui/icons-material/Send';
 import { useState } from "react";
 import { useSocketContext } from "../../context/SocketContext";
 
-export default function TextChatInput() {
+interface TextChatInput {
+    show: boolean;
+}
+
+export default function TextChatInput({ show }: TextChatInput) {
 
     const [inputText, setInputText] = useState<string>('');
 
@@ -17,22 +21,48 @@ export default function TextChatInput() {
     };
 
     return (
-        <Stack direction={"row"} sx={{ position: 'relative' }}>
+        <Stack direction={"row"} sx={{
+            position: 'relative',
+            pointerEvents: show ? 'auto' : 'none',
+            opacity: show ? '1' : '0',
+            backgroundColor: 'red',
+            marginRight: '34px',
+            marginBottom: '14px', // 34 - 40/2 where 40 = height of 1 line textarea
+            marginLeft: '33%',
+            height: '40px',
+            transition: theme => theme.transitions.create(['opacity'], {
+                duration: 200,
+            }),
+        }}>
+
             <TextField id="text-message-input"
                 label="Message"
                 variant="outlined"
                 multiline
+                size={'small'} // 23px per line
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 sx={{
                     position: 'absolute', bottom: 0, left: 0,
-                    width: '75%',
-                    backgroundColor: theme => theme.palette.background.default
+                    width: 'calc(100% - 141px)',
+                    backgroundColor: theme => theme.palette.background.default,
+                }}
+                InputProps={{
+                    sx: {
+                        borderBottomRightRadius: 0,
+                        borderTopRightRadius: 0
+                    }
                 }}
             />
 
             <Button variant="contained" endIcon={<SendIcon />}
-                sx={{ position: 'relative', left: '75%', transform: 'translateX(-100%)' }}
+                sx={{
+                    position: 'absolute', right: '0', bottom: '0',
+                    height: '100%',
+                    borderRadius: 0,
+                    paddingLeft: '32px',
+                    paddingRight: 'calc(32px + 16px)',
+                }}
                 onClick={handleSendMessage}
             >
                 Send
