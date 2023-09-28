@@ -9,7 +9,7 @@ interface TextMessages {
 
 export default function TextMessages({ show }: TextMessages) {
 
-    const { messages } = useSocketContext();
+    const { messages, socketRef } = useSocketContext();
 
 
     // auto-scroll when new message appears
@@ -29,6 +29,7 @@ export default function TextMessages({ show }: TextMessages) {
             padding: 2,
             display: 'flex',
             flexDirection: 'column',
+            alignItems: 'start',
             gap: 2,
             // DO NOT USE
             // issue with this: https://stackoverflow.com/questions/36130760/use-justify-content-flex-end-and-to-have-vertical-scrollbar
@@ -47,6 +48,7 @@ export default function TextMessages({ show }: TextMessages) {
                         time={message.time}
                         show={show}
                         delay={200 * (messages.length - 1 - index)}
+                        shift={message.fromSocketId === socketRef?.current?.id}
                     />
                 );
             })}

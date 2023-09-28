@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface TextMessage {
     username: string;
@@ -7,9 +7,10 @@ interface TextMessage {
     message: string;
     show: boolean;
     delay: number;
+    shift?: boolean;
 }
 
-export default function TextMessage({ username, time, message, show, delay }: TextMessage) {
+export default function TextMessage({ username, time, message, show, delay, shift }: TextMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -27,6 +28,16 @@ export default function TextMessage({ username, time, message, show, delay }: Te
 
     }, []);
 
+    const displayedTime = useMemo<string>(() => {
+        const messageDate = new Date(time);
+
+        const hours = messageDate.getHours().toString().padStart(2, '0');
+        const minutes = messageDate.getMinutes().toString().padStart(2, '0');
+        const seconds = messageDate.getSeconds().toString().padStart(2, '0');
+
+        return `${hours}:${minutes}:${seconds}`;
+    }, [time]);
+
     return (
         <Stack sx={{
             backgroundColor: theme => theme.palette.background.default,
@@ -39,12 +50,13 @@ export default function TextMessage({ username, time, message, show, delay }: Te
             }),
             // used instead of justifyContent: flex-end because of a bug:
             // https://stackoverflow.com/questions/36130760/use-justify-content-flex-end-and-to-have-vertical-scrollbar
-            '&:first-child': {
+            '&:first-of-type': {
                 marginTop: 'auto !important'
-            }
+            },
+            alignSelf: shift ? 'end' : 'auto'
         }}>
             <Box>
-                {username} at {time}
+                {username} at {displayedTime}
             </Box>
             <Box sx={{ whiteSpace: 'pre-line' }}>
                 {message}

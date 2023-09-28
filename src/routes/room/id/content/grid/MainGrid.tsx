@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { combinedUserState } from "../../../../../types/user";
 import MainGridItem from "./MainGridItem";
 import MainGridSortableContext from "./MainGridSortableContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
 
 interface MainGrid {
@@ -15,6 +15,7 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
 
     const gridItemWidth = Math.max(1, Math.floor(12 / columns));
 
+    const previousItemsOrderRef = useRef<UniqueIdentifier[]>([]);
     const [items, setItems] = useState<UniqueIdentifier[]>([]);
     const [itemStreamMap, setItemStreamMap] = useState<Map<UniqueIdentifier, combinedUserState>>(new Map());
 
@@ -28,8 +29,27 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
             newItemStreamMap.set(newItem, streamInfo);
         });
 
-        setItems(newItems);
+
         setItemStreamMap(newItemStreamMap);
+
+        // remember previous order of items when streams change
+        const updatedItems: UniqueIdentifier[] = [];
+
+        previousItemsOrderRef.current.forEach((item) => {
+            if (newItemStreamMap.has(item)) {
+                updatedItems.push(item);
+            }
+        });
+        // add new ones
+        for (const addedItem of newItemStreamMap.keys()) {
+            if (!updatedItems.includes(addedItem)) {
+                updatedItems.push(addedItem);
+            }
+        }
+
+        // update previous order
+        previousItemsOrderRef.current = updatedItems;
+        setItems(updatedItems);
 
     }, [streams, rows, columns]);
 
