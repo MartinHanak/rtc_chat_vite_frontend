@@ -1,9 +1,9 @@
 import { Grid } from "@mui/material";
 import { combinedUserState } from "../../../../../types/user";
-import { DndContext, DragEndEvent, KeyboardSensor, MouseSensor, TouchSensor, UniqueIdentifier, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, rectSortingStrategy } from "@dnd-kit/sortable";
 import MainGridItem from "./MainGridItem";
-import { useState } from "react";
+import MainGridSortableContext from "./MainGridSortableContext";
+import { useEffect, useState } from "react";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 interface MainGrid {
     rows: number;
@@ -15,69 +15,49 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
 
     const gridItemWidth = Math.max(1, Math.floor(12 / columns));
 
-    const [streamIdentifiers, setStreamIdentifiers] = useState<UniqueIdentifier[]>(() =>
-        Array.from(streams.values())
-            .map((streamInfo) => `mainGrid_${columns}x${rows}_${streamInfo.socketId}`)
-    );
+    const [items, setItems] = useState<UniqueIdentifier[]>([]);
+    const [itemStreamMap, setItemStreamMap] = useState<Map<UniqueIdentifier, combinedUserState>>(new Map());
 
-    const sensors = useSensors(
-        useSensor(MouseSensor, {
-            // Require the mouse to move by 10 pixels before activating
-            activationConstraint: {
-                distance: 10,
-            },
-        }),
-        useSensor(TouchSensor, {
-            // Press delay of 250ms, with tolerance of 5px of movement
-            activationConstraint: {
-                delay: 250,
-                tolerance: 5,
-            },
-        }),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        })
-    );
+    useEffect(() => {
+        const newItems: UniqueIdentifier[] = [];
+        const newItemStreamMap = new Map<UniqueIdentifier, combinedUserState>();
 
+        streams.forEach((streamInfo) => {
+            const newItem = `mainGrid_${columns}x${rows}_${streamInfo.socketId}`;
+            newItems.push(newItem);
+            newItemStreamMap.set(newItem, streamInfo);
+        });
 
-    function handleDragEnd(event: DragEndEvent) {
-        const { active, over } = event;
+        setItems(newItems);
+        setItemStreamMap(newItemStreamMap);
 
-        if (over && active.id !== over.id) {
-            setStreamIdentifiers((items) => {
-                const oldIndex = items.indexOf(active.id);
-                const newIndex = items.indexOf(over.id);
+    }, [streams, rows, columns]);
 
-                return arrayMove(items, oldIndex, newIndex);
-            });
-        }
-    }
+    const handleItemsChange = (newItems: UniqueIdentifier[]) => {
+        setItems(newItems);
+    };
+
 
     return (
         <Grid container spacing={2} >
-            <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-            >
-                <SortableContext
-                    items={streamIdentifiers}
-                    strategy={rectSortingStrategy}
-                >
-                    {Array.from(streams.values()).map((streamInfo) => {
+            <MainGridSortableContext items={items} setItems={handleItemsChange}>
+                {items.map((item) => {
+                    const streamInfo = itemStreamMap.get(item);
 
-                        // key forces rerender when columns or rows change
-                        return (
-                            < MainGridItem
-                                dragId={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
-                                key={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
-                                width={gridItemWidth}
-                                streamInfo={streamInfo}
-                            />
-                        );
-                    })}
-                </SortableContext>
-            </DndContext>
+                    if (!streamInfo) {
+                        return;
+                    }
+                    // key forces rerender when columns or rows change
+                    return (
+                        < MainGridItem
+                            dragId={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
+                            key={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
+                            width={gridItemWidth}
+                            streamInfo={streamInfo}
+                        />
+                    );
+                })}
+            </MainGridSortableContext>
         </Grid>
     );
 }

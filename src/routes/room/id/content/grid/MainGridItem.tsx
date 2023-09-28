@@ -20,7 +20,8 @@ export default function MainGridItem({ dragId, width, streamInfo }: MainGridItem
     } = useSortable({ id: dragId });
 
     return (
-        <Grid item xs={width}
+        <Grid item
+            xs={width}
             ref={setNodeRef}
             {...attributes}
             {...listeners}
