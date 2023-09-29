@@ -1,16 +1,18 @@
 import { Box, Button, Container } from "@mui/material";
-import { combinedUserState } from "../../../../../types/user";
+import { combinedUserState, displayState } from "../../../../../types/user";
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import { useEffect, useRef } from "react";
+import StreamDisplayControl from "./StreamDisplayControl";
 
 interface GridDisplayControls {
     streams: Map<string, combinedUserState>;
     setHeight: (input: number) => void;
     toggle: () => void;
     show: boolean;
+    changeUserDisplayState: (userId: string, state: displayState) => void;
 }
 
-export default function GridDisplayControls({ streams, setHeight, toggle, show }: GridDisplayControls) {
+export default function GridDisplayControls({ streams, setHeight, toggle, show, changeUserDisplayState }: GridDisplayControls) {
 
     const containerRef = useRef<HTMLDivElement>();
 
@@ -20,6 +22,11 @@ export default function GridDisplayControls({ streams, setHeight, toggle, show }
             setHeight(containerHeight);
         }
     }, [setHeight]);
+
+    function getUserDisplaySwitchFunction(userId: string) {
+        return (state: displayState) => changeUserDisplayState(userId, state);
+    }
+
 
     return (
         <Box
@@ -36,21 +43,29 @@ export default function GridDisplayControls({ streams, setHeight, toggle, show }
                 Toggle
             </Button>
 
-            <Container
-                sx={{ height: 'calc(100% - 32px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
+            <Container sx={{ height: 'calc(100% - 32px)' }}>
+                <Box
+                    ref={containerRef}
+                    sx={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
 
-                <Button sx={{ height: '100%' }}>
-                    <PlayArrowRoundedIcon fontSize="large" sx={{ transform: 'rotate(180deg)' }} />
-                </Button>
+                    <Button sx={{ height: '100%' }} >
+                        <PlayArrowRoundedIcon fontSize="large" sx={{ transform: 'rotate(180deg)' }} />
+                    </Button>
 
-                <Box ref={containerRef} sx={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
-                    hello
+
+                    {Array.from(streams.values()).map((stream) => {
+                        return (
+                            <StreamDisplayControl key={`display_control_${stream.socketId}`} user={stream} displaySwitch={getUserDisplaySwitchFunction(stream.socketId)} />
+                        );
+
+                    })}
+
+
+                    <Button sx={{ height: '100%' }}>
+                        <PlayArrowRoundedIcon fontSize="large" />
+                    </Button>
+
                 </Box>
-
-                <Button sx={{ height: '100%' }}>
-                    <PlayArrowRoundedIcon fontSize="large" />
-                </Button>
-
             </Container>
         </Box>
     );

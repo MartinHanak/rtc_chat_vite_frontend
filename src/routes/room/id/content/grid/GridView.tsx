@@ -17,7 +17,7 @@ export default function GridView() {
     // display controls
     const { show, height, toggle, setHeight } = useDisplayControls();
 
-    const { streams } = useCombinedDisplayStreamState();
+    const { streams, changeUserDisplayState } = useCombinedDisplayStreamState();
 
     return (
         <Box sx={{ position: 'relative', minHeight: '500px' }}>
@@ -30,7 +30,7 @@ export default function GridView() {
 
             <TextChatOverlay offset={show ? height + 32 : 32} />
 
-            <GridDisplayControls streams={streams} setHeight={setHeight} toggle={toggle} show={show} />
+            <GridDisplayControls streams={streams} setHeight={setHeight} toggle={toggle} show={show} changeUserDisplayState={changeUserDisplayState} />
         </Box>
     );
 }

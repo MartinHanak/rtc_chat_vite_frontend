@@ -21,6 +21,11 @@ export default function SideGrid({ streams, offset }: SideGrid) {
             backgroundColor: theme => theme.palette.action.focus
         }}>
             {Array.from(streams.values()).map((streamInfo) => {
+
+                if (streamInfo.displayState !== 'side') {
+                    return null;
+                }
+
                 return (
                     <VideoAudioChat key={streamInfo.socketId} username={streamInfo.username} stream={streamInfo.stream} />
                 );

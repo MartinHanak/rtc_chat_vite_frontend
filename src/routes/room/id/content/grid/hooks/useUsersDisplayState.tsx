@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSocketContext } from "../../../context/SocketContext";
-import { userDisplayState } from "../../../../../../types/user";
+import { displayState, userDisplayState } from "../../../../../../types/user";
 
 export default function useUsersDisplayState() {
   const { users } = useSocketContext();
@@ -24,9 +24,28 @@ export default function useUsersDisplayState() {
     });
   }, [users]);
 
+  function changeUserDisplayState(userId: string, state: displayState) {
+
+    setUsersDisplayState((prev) => {
+      const newState = new Map<string, userDisplayState>();
+
+      prev.forEach((value, key) => {
+        newState.set(key, value);
+      });
+
+      const previousUserDisplayState = prev.get(userId);
+      if (previousUserDisplayState) {
+        newState.set(userId, { ...previousUserDisplayState, displayState: state });
+      }
+
+      return newState;
+    });
+
+  }
 
 
   return {
-    usersDisplayState
+    usersDisplayState,
+    changeUserDisplayState
   };
 }

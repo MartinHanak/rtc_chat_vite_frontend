@@ -67,6 +67,10 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
                     if (!streamInfo) {
                         return;
                     }
+
+                    if (streamInfo.displayState !== 'main') {
+                        return null;
+                    }
                     // key forces rerender when columns or rows change
                     return (
                         < MainGridItem

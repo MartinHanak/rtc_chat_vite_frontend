@@ -5,7 +5,7 @@ import { combinedUserState } from "../../../../../../types/user";
 
 export default function useCombinedDisplayStreamState() {
     const { streams } = useReadyStreams();
-    const { usersDisplayState } = useUsersDisplayState();
+    const { usersDisplayState, changeUserDisplayState } = useUsersDisplayState();
 
     const [combinedStreamDisplayState, setCombinedStreamDisplayState] = useState<Map<string, combinedUserState>>(new Map());
 
@@ -26,6 +26,7 @@ export default function useCombinedDisplayStreamState() {
     }, [streams, usersDisplayState]);
 
     return {
-        streams: combinedStreamDisplayState
+        streams: combinedStreamDisplayState,
+        changeUserDisplayState
     };
 }
