@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 interface Filter {
     items: string[];
@@ -8,6 +8,28 @@ interface Filter {
 export default function Filter({ items, handleItemsChange }: Filter) {
 
     return (
-        <TextField />
+        <Autocomplete
+            value={items}
+            onChange={(_event, newValue: string[]) => {
+                handleItemsChange(newValue);
+            }}
+            clearIcon={false}
+            options={[]}
+            freeSolo
+            multiple
+            renderTags={(value, props) =>
+                value.map((option, index) => (
+                    <Chip label={option} {...props({ index })} />
+                ))
+            }
+            renderInput={(params) => {
+                return (
+                    <TextField label="Search" {...params} />
+                );
+            }}
+            sx={{
+                maxWidth: '500px'
+            }}
+        />
     );
 }
