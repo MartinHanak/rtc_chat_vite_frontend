@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, Button, Modal } from "@mui/material";
+import { Box, Button, Modal, Tooltip } from "@mui/material";
 import Settings from "./settings/Settings";
 
 
@@ -12,9 +12,11 @@ export function LocalSettingsModal() {
 
     return (
         <>
-            <Button onClick={handleOpen}>
-                <SettingsIcon />
-            </Button>
+            <Tooltip title="Settings" placement={"bottom"}>
+                <Button onClick={handleOpen}>
+                    <SettingsIcon />
+                </Button>
+            </Tooltip>
 
             <Modal
                 open={open}

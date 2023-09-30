@@ -14,7 +14,7 @@ export default function TextChatInput({ show }: TextChatInput) {
     const { socketRef } = useSocketContext();
 
     const handleSendMessage = () => {
-        if (socketRef && socketRef.current) {
+        if (socketRef && socketRef.current && inputText.trim() !== '') {
             socketRef.current.emit('message', socketRef.current.id, inputText, Date.now());
             setInputText('');
         }

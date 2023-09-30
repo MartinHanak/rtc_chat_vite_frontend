@@ -59,7 +59,7 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
 
 
     return (
-        <Grid container spacing={2} >
+        <Grid container spacing={2} sx={{ marginTop: 0, paddingTop: 8 }}>
             <MainGridSortableContext items={items} setItems={handleItemsChange}>
                 {items.map((item) => {
                     const streamInfo = itemStreamMap.get(item);

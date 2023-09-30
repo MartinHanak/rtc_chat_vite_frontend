@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Tooltip } from "@mui/material";
 import ChatIcon from '@mui/icons-material/Chat';
 import TextChatInput from "./TextChatInput";
 import TextMessages from "./TextMessages";
@@ -56,7 +56,9 @@ export default function TextChatOverlay({ offset }: TextChatOverlay) {
 
                     }
                 }}>
-                <ChatIcon fontSize="large" sx={{ color: theme => theme.palette.text.primary }} />
+                <Tooltip title="Chat" placement={"top"}>
+                    <ChatIcon fontSize="large" sx={{ color: theme => theme.palette.text.primary }} />
+                </Tooltip>
             </Button>
 
 
