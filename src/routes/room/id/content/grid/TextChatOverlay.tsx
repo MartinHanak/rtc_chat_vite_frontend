@@ -19,7 +19,11 @@ export default function TextChatOverlay({ offset }: TextChatOverlay) {
                 right: theme => theme.spacing(2),
                 bottom: `calc(${offset}px + 16px )`,
                 height: `calc(100% - ${offset}px - 32px)`,
-                width: '50%',
+                maxWidth: theme => theme.breakpoints.values.md,
+                width: {
+                    xs: '100%',
+                    lg: '50%',
+                },
                 pointerEvents: 'none'
             }}
         >

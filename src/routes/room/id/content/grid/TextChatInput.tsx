@@ -28,7 +28,10 @@ export default function TextChatInput({ show }: TextChatInput) {
             backgroundColor: 'red',
             marginRight: '34px',
             marginBottom: '14px', // 34 - 40/2 where 40 = height of 1 line textarea
-            marginLeft: '33%',
+            marginLeft: {
+                xs: 4,
+                md: '33%'
+            },
             height: '40px',
             transition: theme => theme.transitions.create(['opacity'], {
                 duration: 200,

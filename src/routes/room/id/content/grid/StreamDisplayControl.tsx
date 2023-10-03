@@ -1,12 +1,14 @@
 import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { combinedUserState, displayState } from "../../../../../types/user";
+import { grey } from '@mui/material/colors';
 
 interface StreamDisplayControl {
+    active: boolean;
     user: combinedUserState;
     displaySwitch: (state: displayState) => void;
 }
 
-export default function StreamDisplayControl({ user, displaySwitch }: StreamDisplayControl) {
+export default function StreamDisplayControl({ active, user, displaySwitch }: StreamDisplayControl) {
 
     const displayStates: displayState[] = ['main', 'side', 'unselected'];
 
@@ -18,7 +20,13 @@ export default function StreamDisplayControl({ user, displaySwitch }: StreamDisp
     };
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} >
+        <Box sx={{
+            height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+            border: '5px solid black',
+            transform: active ? '' : 'scale(0.5)',
+            pointerEvents: active ? 'auto' : 'none',
+            backgroundColor: active ? '' : grey[400]
+        }} >
             {user.username}
 
             <ToggleButtonGroup
