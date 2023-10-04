@@ -1,51 +1,41 @@
 import { Box, Button, Container, Tooltip } from "@mui/material";
 import { combinedUserState, displayState } from "../../../../../types/user";
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
-import { useEffect, useMemo, useRef, useState } from "react";
-//import StreamDisplayControl from "./StreamDisplayControl";
-import { grey } from "@mui/material/colors";
+import { useEffect, useRef, useState } from "react";
+import StreamDisplayControl from "./StreamDisplayControl";
+import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 
 interface GridDisplayControls {
     streams: Map<string, combinedUserState>;
     setHeight: (input: number) => void;
+    height: number;
     toggle: () => void;
     show: boolean;
     changeUserDisplayState: (userId: string, state: displayState) => void;
 }
 
-export default function GridDisplayControls({ streams, setHeight, toggle, show, changeUserDisplayState }: GridDisplayControls) {
+export default function GridDisplayControls({ streams, setHeight, height, toggle, show, changeUserDisplayState }: GridDisplayControls) {
 
-    //const streamArray = Array.from(streams.values());
-    const [streamArray, setStreamArray] = useState<string[]>(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
-    const [activeStream, setActiveStream] = useState<string>('9');
+    const streamArray = Array.from(streams.values());
+    //const [streamArray, setStreamArray] = useState<string[]>(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
+    const [activeStream, setActiveStream] = useState<string>('');
 
     const containerRef = useRef<HTMLDivElement>();
 
-    /*
+
+
     useEffect(() => {
         if (streamArray.length > 0 && activeStream === '') {
-            //setActiveStream(streamArray[0].socketId);
-            setActiveStream(streamArray[0]);
+            setActiveStream(streamArray[0].socketId);
+            //setActiveStream(streamArray[0]);
         }
     }, [streamArray]);
-    */
 
-    const displayedArray = useMemo(() => {
-        const activeIndex = streamArray.indexOf(activeStream);
-        if (activeIndex === -1) {
-            return streamArray;
-        }
-        const partBeforeActive = streamArray.slice(0, activeIndex);
-
-        const partAfterActive = streamArray.slice(activeIndex + 1, streamArray.length);
-
-        return [...partAfterActive, ...partBeforeActive, activeStream, ...partAfterActive, ...partBeforeActive];
-
-    }, [streamArray, activeStream]);
 
     useEffect(() => {
         if (containerRef && containerRef.current) {
             const containerHeight = containerRef.current.clientHeight;
+            console.log(`Height is ${containerHeight}`);
             setHeight(containerHeight);
         }
     }, [setHeight]);
@@ -54,77 +44,140 @@ export default function GridDisplayControls({ streams, setHeight, toggle, show, 
         return (state: displayState) => changeUserDisplayState(userId, state);
     }
 
+    function handleActiveStreamChange(delta: number) {
+
+
+        let activeIndex = streamArray.findIndex(stream => stream.socketId === activeStream);
+        if (delta > 0) {
+            activeIndex += 1;
+            if (activeIndex >= streamArray.length) {
+                activeIndex = 0;
+            }
+        } else if (delta < 0) {
+            activeIndex -= 1;
+            if (activeIndex < 0) {
+                activeIndex = streamArray.length - 1;
+            }
+        }
+
+        setActiveStream(streamArray[activeIndex].socketId);
+    }
+
+
+
 
 
 
     return (
         <Box
+            ref={containerRef}
             sx={{
                 position: 'fixed',
-                bottom: show ? '0' : 'calc(-20%  + 32px)',
+                bottom: show ? '0' : `calc(-${height}px + 32px)`,
                 left: 0,
                 width: '100%',
                 height: '20% ',
-                backgroundColor: 'red',
+                minHeight: '200px',
+                //minHeight: '200px',
+                //backgroundColor: 'red',
+                display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column',
+                pointerEvents: 'none'
             }}>
 
             <Tooltip title="Stream Display Settings" placement="top">
-                <Button sx={{ width: '100%', height: '32px' }} onClick={() => toggle()}>
-                    Toggle
+                <Button sx={{ height: '32px', pointerEvents: 'auto' }} onClick={() => toggle()}>
+                    <ExpandLessRoundedIcon fontSize="large" sx={{
+                        transform: show ? 'rotate(180deg)' : 'none'
+                    }} />
                 </Button>
             </Tooltip>
 
-            <Container sx={{ height: 'calc(100% - 32px)' }}>
+            <Container sx={{ height: 'calc(100% - 32px)', pointerEvents: 'auto' }}>
                 <Box
-                    ref={containerRef}
-                    sx={{ height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', }}>
 
-                    <Button sx={{ height: '100%' }} >
-                        <PlayArrowRoundedIcon fontSize="large" sx={{ transform: 'rotate(180deg)' }} />
-                    </Button>
+                    sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+
 
                     <Box sx={{
                         height: '100%',
-                        display: 'flex', justifyContent: 'center', alignItems: 'center',
+                        width: '100%',
+                        display: 'flex', justifyContent: 'start', alignItems: 'center',
                         overflow: 'hidden',
+                        position: 'relative',
+                        paddingTop: 2,
+                        paddingBottom: 4
                     }}>
-                        {displayedArray.map((stream, index) => {
-                            console.log(`active stream is ${activeStream}`);
+                        <Button sx={{
+                            height: '100%',
+                            position: 'absolute',
+                            left: 0,
+                            top: 0,
+                            zIndex: 10
+                        }}
+                            onClick={() => handleActiveStreamChange(-1)}
+                        >
+                            <PlayArrowRoundedIcon fontSize="large" sx={{ transform: 'rotate(180deg)' }} />
+                        </Button>
 
-                            const active = stream === activeStream;
-                            const halfLength = Math.floor(displayedArray.length / 2) - 1.5;
+                        <Box sx={{
+                            height: '100%',
+                            width: '100%',
+                            display: 'flex', justifyContent: 'start', alignItems: 'center',
+                            overflow: 'visible',
+                            transform: 'translateX(50%)'
+                        }}>
+                            {streamArray.map((stream) => {
+                                //console.log(`active stream is ${activeStream}`);
 
-                            return (
-                                <Box sx={{
-                                    height: '100%',
-                                    minWidth: '320px',
-                                    display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
-                                    border: '5px solid black',
-                                    //transform: active ? '' : 'scale(0.5)',
-                                    pointerEvents: active ? 'auto' : 'none',
-                                    backgroundColor: active ? '' : grey[400],
-                                    transform: `translateX(-100%)`,
-                                }}>
-                                    {stream}
-                                </Box>
-                            );
-                            /*
-                            return (
-                                <StreamDisplayControl key={`display_control_${stream.socketId}`}
-                                    active={stream.socketId === activeStream}
-                                    user={stream}
-                                    displaySwitch={getUserDisplaySwitchFunction(stream.socketId)}
-                                />
-                            );
-                            */
+                                const active = stream.socketId === activeStream;
+                                const activeIndex = streamArray.findIndex(stream => stream.socketId === activeStream);
+                                let transformValue = `translateX(${(-activeIndex - 0.5) * 100}%)`;
+                                if (!active) {
+                                    transformValue += ' scale(0.75)';
+                                }
 
-                        })}
+                                return (
+                                    <Box
+                                        onClick={() => setActiveStream(stream.socketId)}
+                                        sx={{
+                                            height: '100%',
+                                            minWidth: '320px',
+                                            display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+                                            //border: '5px solid black',
+                                            //transform: active ? '' : 'scale(0.5)',
+                                            //pointerEvents: active ? 'auto' : 'none',
+                                            transform: transformValue,
+                                            transition: theme => theme.transitions.create(['transform'], {
+                                                duration: 500
+                                            })
+                                        }}
+                                    >
+                                        <StreamDisplayControl key={`display_control_${stream.socketId}`}
+                                            active={stream.socketId === activeStream}
+                                            user={stream}
+                                            displaySwitch={getUserDisplaySwitchFunction(stream.socketId)}
+                                        />
+                                    </Box>
+                                );
+
+                            })}
+                        </Box>
+
+                        <Button sx={{
+                            height: '100%',
+                            position: 'absolute',
+                            right: 0,
+                            top: 0,
+                            zIndex: 10
+                        }}
+                            onClick={() => handleActiveStreamChange(+1)}
+                        >
+                            <PlayArrowRoundedIcon fontSize="large" />
+                        </Button>
+
                     </Box>
 
 
-                    <Button sx={{ height: '100%' }}>
-                        <PlayArrowRoundedIcon fontSize="large" />
-                    </Button>
 
                 </Box>
             </Container>

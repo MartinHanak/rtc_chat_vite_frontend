@@ -1,6 +1,12 @@
-import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Card, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import { combinedUserState, displayState } from "../../../../../types/user";
 import { grey } from '@mui/material/colors';
+
+import ViewSidebarRoundedIcon from '@mui/icons-material/ViewSidebarRounded';
+import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';
+import HideSourceRoundedIcon from '@mui/icons-material/HideSourceRounded';
+import React from "react";
+
 
 interface StreamDisplayControl {
     active: boolean;
@@ -10,7 +16,24 @@ interface StreamDisplayControl {
 
 export default function StreamDisplayControl({ active, user, displaySwitch }: StreamDisplayControl) {
 
-    const displayStates: displayState[] = ['main', 'side', 'unselected'];
+    const displayStates: { state: displayState, icon: React.ReactNode, tooltip: string; }[] = [
+
+        {
+            state: 'side',
+            icon: <ViewSidebarRoundedIcon sx={{ transform: 'rotate(180deg)' }} />,
+            tooltip: 'Side'
+        },
+        {
+            state: 'main',
+            icon: <ViewModuleRoundedIcon />,
+            tooltip: 'Main'
+        },
+        {
+            state: 'unselected',
+            icon: <HideSourceRoundedIcon />,
+            tooltip: 'Hidden'
+        }
+    ];
 
     const handleDisplayStateChange = (
         _event: React.MouseEvent<HTMLElement>,
@@ -20,10 +43,9 @@ export default function StreamDisplayControl({ active, user, displaySwitch }: St
     };
 
     return (
-        <Box sx={{
+        <Card sx={{
             height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
-            border: '5px solid black',
-            transform: active ? '' : 'scale(0.5)',
+            // border: '5px solid black',
             pointerEvents: active ? 'auto' : 'none',
             backgroundColor: active ? '' : grey[400]
         }} >
@@ -34,15 +56,21 @@ export default function StreamDisplayControl({ active, user, displaySwitch }: St
                 exclusive
                 onChange={handleDisplayStateChange}
             >
-                {displayStates.map((state) => {
+                {displayStates.map(({ state, icon, tooltip }) => {
                     return (
-                        <ToggleButton key={`${user.socketId}_display_state_${state}`} value={state}>
-                            {state}
+
+                        <ToggleButton value={state} key={`${user.socketId}_display_state_${state}`}>
+                            <Tooltip title={tooltip} >
+                                <>
+                                    {icon}
+                                </>
+                            </Tooltip>
                         </ToggleButton>
+
                     );
                 })}
             </ToggleButtonGroup>
 
-        </Box>
+        </Card>
     );
 }

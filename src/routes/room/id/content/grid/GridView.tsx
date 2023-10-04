@@ -29,11 +29,11 @@ export default function GridView() {
 
                 <LayoutControls rows={rows} columns={columns} changeRows={changeRowsNumber} changeColumns={changeColumnsNumber} />
 
-                <SideGrid streams={streams} offset={show ? height + 32 : 32} />
+                <SideGrid streams={streams} offset={show ? height : 0} />
 
-                <TextChatOverlay offset={show ? height + 32 : 32} />
+                <TextChatOverlay offset={show ? height : 0} />
 
-                <GridDisplayControls streams={streams} setHeight={setHeight} toggle={toggle} show={show} changeUserDisplayState={changeUserDisplayState} />
+                <GridDisplayControls streams={streams} setHeight={setHeight} height={height} toggle={toggle} show={show} changeUserDisplayState={changeUserDisplayState} />
             </Box>
         </>
     );
