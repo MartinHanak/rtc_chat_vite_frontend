@@ -38,14 +38,10 @@ export default function RoomList({ filterItems, selectedTypes }: RoomList) {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs="auto">
-                <NewRoomCard />
-            </Grid>
+            <NewRoomCard />
 
             {status === 'loading' ?
-                <Grid item xs="auto">
-                    <LoadingRoomCard />
-                </Grid>
+                <LoadingRoomCard />
                 :
                 <>
                     {roomTypeDisplayOrder.map((type) => {
@@ -54,9 +50,7 @@ export default function RoomList({ filterItems, selectedTypes }: RoomList) {
                             return roomsFilteredByFilterItems
                                 .filter((room) => room.type === type)
                                 .map((room) => (
-                                    <Grid item xs="auto" key={room.name}>
-                                        <RoomCard room={room} />
-                                    </Grid>
+                                    <RoomCard room={room} key={room.name} />
                                 ));
 
                         }

@@ -1,4 +1,4 @@
-import { Card } from "@mui/material";
+import { Card, Grid } from "@mui/material";
 
 interface RoomCardContainer {
     children: React.ReactNode;
@@ -6,8 +6,10 @@ interface RoomCardContainer {
 
 export default function RoomCardContainer({ children }: RoomCardContainer) {
     return (
-        <Card sx={{ minWidth: 150, minHeight: 200, width: '100%', height: '100%', overflow: 'visible' }}>
-            {children}
-        </Card>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Card sx={{ minHeight: 200, height: '100%', width: '100%', overflow: 'visible' }}>
+                {children}
+            </Card>
+        </Grid>
     );
 }
