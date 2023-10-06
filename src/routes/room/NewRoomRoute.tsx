@@ -1,8 +1,12 @@
-import { Alert, Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { BACKEND_URL } from "../../util/config";
 import { RoomType } from "../../types/room";
 import { useNavigate } from "react-router-dom";
+
+import VideocamIcon from '@mui/icons-material/Videocam';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import CreateIcon from '@mui/icons-material/Create';
 
 export default function NewRoomRoute() {
 
@@ -98,10 +102,34 @@ export default function NewRoomRoute() {
                         value={type}
                         label="Type"
                         onChange={handleTypeChange}
+                        sx={{
+                            '& .MuiSelect-select': {
+                                display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'start',
+                                gap: 2
+                            },
+                            '& .MuiListItemIcon-root': {
+                                minWidth: 0
+                            }
+                        }}
                     >
-                        <MenuItem value={"video"}>Video</MenuItem>
-                        <MenuItem value={"audio"}>Audio</MenuItem>
-                        <MenuItem value={"text"}>Text</MenuItem>
+                        <MenuItem value={"video"} >
+                            <ListItemIcon>
+                                <VideocamIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Video" />
+                        </MenuItem>
+                        <MenuItem value={"audio"}>
+                            <ListItemIcon>
+                                <AudiotrackIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Audio" />
+                        </MenuItem>
+                        <MenuItem value={"text"}>
+                            <ListItemIcon>
+                                <CreateIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Text" />
+                        </MenuItem>
                     </Select>
                 </FormControl>
 
