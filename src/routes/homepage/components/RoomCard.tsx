@@ -63,13 +63,18 @@ export default function RoomCard({ room }: RoomCard) {
 
     return (
         <RoomCardContainer>
-            <CardActionArea onClick={handleRoomCardClick} sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'stretch' }} disableRipple>
+            <CardActionArea onClick={handleRoomCardClick} sx={{
+                width: '100%', height: '100%',
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'stretch'
+
+            }} >
 
                 <StyledRoomCardHeader roomType={room.type}>
                     {room.type && typeToIcon[room.type]}
                 </StyledRoomCardHeader>
 
                 <RoomCardContent name={room.name} description={room.description} />
+
 
             </CardActionArea>
         </RoomCardContainer>
