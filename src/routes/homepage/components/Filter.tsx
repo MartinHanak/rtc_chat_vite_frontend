@@ -1,4 +1,5 @@
-import { Autocomplete, Chip, TextField } from "@mui/material";
+import { Autocomplete, Chip, InputAdornment, TextField } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 
 interface Filter {
     items: string[];
@@ -24,7 +25,15 @@ export default function Filter({ items, handleItemsChange }: Filter) {
             }
             renderInput={(params) => {
                 return (
-                    <TextField label="Search" {...params} />
+                    <TextField label="Search" {...params}
+                        InputProps={{
+                            ...params.InputProps,
+                            startAdornment: <>
+                                <InputAdornment position="start"><SearchIcon /></InputAdornment>
+                                {params.InputProps.startAdornment}
+                            </>
+                        }}
+                    />
                 );
             }}
             sx={{
