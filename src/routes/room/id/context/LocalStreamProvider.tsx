@@ -1,4 +1,4 @@
-import { MutableRefObject, createContext, useContext, useEffect, useRef, useState } from "react";
+import { MutableRefObject, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import Loader from "../../../../components/Loader";
 import { useSocketContext } from "./SocketContext";
 
@@ -42,6 +42,19 @@ export function LocalStreamProvider({ children }: LocalStreamContext) {
             break;
     }
 
+    const constraints: MediaStreamConstraints = useMemo(() => {
+        const constraints: MediaStreamConstraints = {};
+
+        constraints.audio = audio ? true : false;
+
+        constraints.video = video ? {
+            width: { min: 640, ideal: 1920, max: 1920 },
+            height: { min: 480, ideal: 1080, max: 1080 }
+        } : false;
+
+        return constraints;
+    }, [audio, video]);
+
 
     useEffect(() => {
         console.log('Preparing local stream');
@@ -56,7 +69,7 @@ export function LocalStreamProvider({ children }: LocalStreamContext) {
                     console.log(`Local stream already set`);
                 } else {
                     promiseStarted.current = true;
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: audio, video: video });
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
                     streamRef.current = stream;
                     setStreamReady(true);
                 }

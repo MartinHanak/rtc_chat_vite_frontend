@@ -138,6 +138,7 @@ export default function GridDisplayControls({ streams, setHeight, height, toggle
 
                                 return (
                                     <Box
+                                        key={`display_control_${stream.socketId}`}
                                         onClick={() => setActiveStream(stream.socketId)}
                                         sx={{
                                             height: '100%',
@@ -152,7 +153,7 @@ export default function GridDisplayControls({ streams, setHeight, height, toggle
                                             })
                                         }}
                                     >
-                                        <StreamDisplayControl key={`display_control_${stream.socketId}`}
+                                        <StreamDisplayControl
                                             active={stream.socketId === activeStream}
                                             user={stream}
                                             displaySwitch={getUserDisplaySwitchFunction(stream.socketId)}
