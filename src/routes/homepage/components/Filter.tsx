@@ -49,7 +49,7 @@ export default function Filter({ items, handleItemsChange }: Filter) {
                 );
             }}
             sx={{
-                maxWidth: '500px',
+                width: '100%',
             }}
         />
     );

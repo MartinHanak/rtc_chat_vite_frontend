@@ -1,28 +1,19 @@
 import { PaletteColor, ToggleButton, ToggleButtonGroup, ToggleButtonProps, styled } from "@mui/material";
 import { RoomType } from "../../../types/room";
-import ChatIcon from '@mui/icons-material/Chat';
-import VideoChatIcon from '@mui/icons-material/VideoChat';
-import VoiceChatIcon from '@mui/icons-material/VoiceChat';
 
 interface RoomTypeSelection {
     selected: RoomType[],
     setSelection: (event: React.MouseEvent<HTMLElement>, input: RoomType[]) => void;
 }
 
-const typeToIcon: Record<RoomType, React.ReactNode> = {
-    'video': <VideoChatIcon sx={{ fontSize: 40, color: "primary.dark" }} />,
-    'audio': <VoiceChatIcon sx={{ fontSize: 40, color: "secondary.dark" }} />,
-    'text': <ChatIcon sx={{ fontSize: 40, color: "tertiary.dark" }} />
-};
-
-
-interface StyledRoomTypeToggleProps extends ToggleButtonProps {
+interface RoomTypeToggleButtonProps extends ToggleButtonProps {
     roomType: RoomType;
 }
 
-export const StyledRoomTypeToggle = styled(ToggleButton, {
+
+const RoomTypeToggleButton = styled(ToggleButton, {
     shouldForwardProp: (prop) => prop !== 'roomType',
-})<StyledRoomTypeToggleProps>(
+})<RoomTypeToggleButtonProps>(
     ({ roomType, theme }) => {
 
         let color: PaletteColor;
@@ -40,11 +31,7 @@ export const StyledRoomTypeToggle = styled(ToggleButton, {
 
         return {
             '&.MuiToggleButtonGroup-grouped': {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                height: '56px',
+                height: '6rem',
                 '&.Mui-selected': {
                     backgroundColor: color.main
                 },
@@ -54,14 +41,16 @@ export const StyledRoomTypeToggle = styled(ToggleButton, {
                 '&:not(.Mui-selected):hover': {
                     backgroundColor: theme.palette.grey[100]
                 },
-                '&:not(.Mui-selected) .MuiSvgIcon-root': {
-                    color: theme.palette.action.disabled
+                '&:not(:last-of-type)': {
+                    borderRadius: '10px 10px 0 0',
+                },
+                '&:not(:first-of-type)': {
+                    borderRadius: '10px 10px 0 0',
                 }
             }
 
         };
     });
-
 
 export default function RoomTypeSelection({ selected, setSelection }: RoomTypeSelection) {
 
@@ -74,13 +63,11 @@ export default function RoomTypeSelection({ selected, setSelection }: RoomTypeSe
     return (
         <ToggleButtonGroup value={selected} onChange={setSelection} fullWidth aria-label="room type selection" sx={{ borderRadius: 0 }}>
 
-            {Object.entries(typeToDisplayedText).map(([type, _displayText]) => {
+            {Object.entries(typeToDisplayedText).map(([type, displayText]) => {
                 return (
-
-                    <StyledRoomTypeToggle roomType={type as RoomType} key={type} value={type} aria-label={type} sx={{ position: 'relative' }} >
-                        {_displayText}
-                        {typeToIcon[type as RoomType]}
-                    </StyledRoomTypeToggle>
+                    <RoomTypeToggleButton key={type} value={type} roomType={type as RoomType} aria-label={type} >
+                        {displayText}
+                    </RoomTypeToggleButton>
                 );
             })}
 
