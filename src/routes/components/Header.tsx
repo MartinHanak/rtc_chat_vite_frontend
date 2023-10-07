@@ -1,4 +1,4 @@
-import { Breadcrumbs, Stack, Link } from "@mui/material";
+import { Breadcrumbs, Stack, Link, Container, Box } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { LocalSettingsModal } from "./LocalSettingsModal";
@@ -11,38 +11,42 @@ export default function Header() {
 
 
     return (
-        <Stack component="header" direction="row" justifyContent="space-between" alignItems="center">
+        <Box sx={{ width: 1, position: 'absolute', top: 0, left: 0 }}>
+            <Container sx={{}}>
+                <Stack component="header" direction="row" justifyContent="space-between" alignItems="center">
 
-            <Breadcrumbs aria-label="breadcrumb">
-                {pathnames.map((name, index) => {
+                    <Breadcrumbs aria-label="breadcrumb">
+                        {pathnames.map((name, index) => {
 
-                    let pathTo = pathnames.slice(0, index + 1).join('/');
+                            let pathTo = pathnames.slice(0, index + 1).join('/');
 
-                    if (name === "") {
-                        name = 'Home';
-                        pathTo = "/";
-                    }
+                            if (name === "") {
+                                name = 'Home';
+                                pathTo = "/";
+                            }
 
-                    return (
-                        <Link
-                            key={name}
-                            component={RouterLink}
-                            underline="hover"
-                            sx={{ display: 'flex', alignItems: 'center' }}
-                            color="inherit"
-                            to={pathTo}
-                        >
-                            {pathTo === '/' && <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />}
-                            {decodeURIComponent(name)}
-                        </Link>
-                    );
+                            return (
+                                <Link
+                                    key={name}
+                                    component={RouterLink}
+                                    underline="hover"
+                                    sx={{ display: 'flex', alignItems: 'center' }}
+                                    color="inherit"
+                                    to={pathTo}
+                                >
+                                    {pathTo === '/' && <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />}
+                                    {decodeURIComponent(name)}
+                                </Link>
+                            );
 
-                })}
-            </Breadcrumbs>
+                        })}
+                    </Breadcrumbs>
 
 
-            <LocalSettingsModal />
+                    <LocalSettingsModal />
 
-        </Stack>
+                </Stack>
+            </Container>
+        </Box>
     );
 }

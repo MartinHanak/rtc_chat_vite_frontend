@@ -1,4 +1,4 @@
-import { Alert, Box, Button, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { BACKEND_URL } from "../../util/config";
 import { RoomType } from "../../types/room";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import VideocamIcon from '@mui/icons-material/Videocam';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import CreateIcon from '@mui/icons-material/Create';
+import HeaderFiller from "../../components/HeaderFiller";
 
 export default function NewRoomRoute() {
 
@@ -71,7 +72,8 @@ export default function NewRoomRoute() {
     }
 
     return (
-        <>
+        <Container>
+            <HeaderFiller />
             <Typography variant="h3">Create a new room</Typography>
 
             <Box
@@ -137,6 +139,6 @@ export default function NewRoomRoute() {
 
                 <Button type="submit"> Confirm </Button>
             </Box>
-        </>
+        </Container>
     );
 }

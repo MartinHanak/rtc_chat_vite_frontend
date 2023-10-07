@@ -10,6 +10,10 @@ declare module "@mui/material/styles" {
   interface PaletteOptions {
     tertiary: SimplePaletteColorOptions;
   }
+
+  interface ButtonPropsColorOverrides {
+    tertiary: true;
+  }
 }
 
 const getDesignTokens = (mode: PaletteMode) => ({

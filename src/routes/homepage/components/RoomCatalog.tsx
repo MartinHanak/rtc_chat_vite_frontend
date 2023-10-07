@@ -1,9 +1,10 @@
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useState } from "react";
 import { RoomType } from "../../../types/room";
 import RoomTypeSelection from "./RoomTypeSelection";
 import RoomList from "./RoomList";
 import Filter from "./Filter";
+import HeaderFiller from "../../../components/HeaderFiller";
 
 export default function RoomCatalog() {
 
@@ -20,12 +21,20 @@ export default function RoomCatalog() {
     };
 
     return (
-        <Box>
-            <Filter items={filterItems} handleItemsChange={handleFilterItemsChange} />
+        <Box sx={{ minHeight: '620px', }}>
+            <Box sx={{ width: 1, bgcolor: theme => theme.palette.grey[300] }}>
+                <HeaderFiller />
+                <Container>
 
-            <RoomTypeSelection selected={selectedRoomType} setSelection={handleSelectionChange} />
+                    <Filter items={filterItems} handleItemsChange={handleFilterItemsChange} />
 
-            <RoomList filterItems={filterItems} selectedTypes={selectedRoomType} />
+                    <RoomTypeSelection selected={selectedRoomType} setSelection={handleSelectionChange} />
+                </Container>
+            </Box>
+
+            <Container>
+                <RoomList filterItems={filterItems} selectedTypes={selectedRoomType} />
+            </Container>
         </Box>
     );
 }

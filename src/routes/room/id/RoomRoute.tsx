@@ -1,7 +1,8 @@
-import { Alert, Box, CircularProgress } from "@mui/material";
+import { Alert, Box, CircularProgress, Container } from "@mui/material";
 import { useAvailableRoomsContext } from "../../components/AvailableRoomsContext";
 import { useLocation } from "react-router-dom";
 import Room from "./Room";
+import HeaderFiller from "../../../components/HeaderFiller";
 
 export default function RoomRoute() {
 
@@ -31,6 +32,9 @@ export default function RoomRoute() {
     }
 
     return (
-        <Room room={rooms.filter((room) => (room.name === currentRoomName))[0]} />
+        <Container>
+            <HeaderFiller />
+            <Room room={rooms.filter((room) => (room.name === currentRoomName))[0]} />
+        </Container>
     );
 }

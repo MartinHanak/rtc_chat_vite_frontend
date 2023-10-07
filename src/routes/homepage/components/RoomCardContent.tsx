@@ -1,15 +1,14 @@
 import { CardContent, Tooltip, Typography } from "@mui/material";
-import RoomCardActions from "./RoomCardActions";
 import { useMemo } from "react";
 
 interface RoomCardContent {
     name: string;
     description: string;
+    maxCharLimit: number;
 }
 
-const maxCharLimit = 90;
 
-export default function RoomCardContent({ name, description }: RoomCardContent) {
+export default function RoomCardContent({ name, description, maxCharLimit }: RoomCardContent) {
 
     const showMore = useMemo(() => {
         if (description.length > maxCharLimit) {
@@ -17,38 +16,41 @@ export default function RoomCardContent({ name, description }: RoomCardContent) 
         } else {
             return false;
         }
-    }, [description]);
+    }, [description, maxCharLimit]);
 
 
     return (
-        <>
-            <CardContent sx={{ width: 1, overflow: 'hidden', flexGrow: 1 }}>
+        <CardContent sx={{ width: 1, overflow: 'hidden', flexGrow: 1, paddingBottom: 0 }}>
 
-                <Tooltip title={name} placement="top-start">
-                    <Typography variant="h5" component="div"
-                        textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
-                    >
-                        {name}
-                    </Typography>
-                </Tooltip>
-
-                <Typography
-                    variant="body2" color="text.secondary" component="div"
-                    sx={{
-                        overflowWrap: 'break-word',
-                    }}
-
+            <Tooltip title={name} placement="top-start">
+                <Typography variant="h5" component="div"
+                    textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
                 >
-                    {description.slice(0, maxCharLimit) + (showMore ? '...' : '')}
+                    {name}
                 </Typography>
+            </Tooltip>
+
+
+
+            <Typography
+                variant="body2" color="text.secondary" component="div"
+                sx={{
+                    overflowWrap: 'break-word',
+                }}
+
+            >
+                {description === '' ?
+                    '(no description)'
+                    :
+                    description.slice(0, maxCharLimit) + (showMore ? '...' : '')}
+            </Typography>
 
 
 
 
-            </CardContent>
+        </CardContent>
 
-            <RoomCardActions showMore={showMore} />
-        </>
+
     );
 
 }
