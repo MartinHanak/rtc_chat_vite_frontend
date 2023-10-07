@@ -25,7 +25,19 @@ export default function Filter({ items, handleItemsChange }: Filter) {
             }
             renderInput={(params) => {
                 return (
-                    <TextField label="Search" {...params}
+                    <TextField label="" placeholder="Search" {...params}
+                        sx={{
+                            '& .MuiInputBase-root': {
+                                backgroundColor: 'white'
+                            },
+                            '& .MuiFormLabel-root': {
+                                backgroundColor: 'white',
+                                borderRadius: 5,
+                                paddingX: 1,
+                                transform: 'translate(9px, -9px) scale(0.75)'
+                                // transform: 'translateX(-8px)'
+                            }
+                        }}
                         InputProps={{
                             ...params.InputProps,
                             startAdornment: <>
@@ -37,7 +49,7 @@ export default function Filter({ items, handleItemsChange }: Filter) {
                 );
             }}
             sx={{
-                maxWidth: '500px'
+                maxWidth: '500px',
             }}
         />
     );
