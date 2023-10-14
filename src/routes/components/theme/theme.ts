@@ -42,7 +42,7 @@ const getDesignTokens = (mode: PaletteMode) => ({
           },
           background: {
             default: "#fff",
-            secondaryDefault: "#e0e0e0",
+            secondaryDefault: "#fff", //"#e0e0e0",
             paper: "#fff",
             light: "#f6f6f6",
           },

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Room, isRoom } from "../../types/room";
 import { BACKEND_URL } from "../../util/config";
 
@@ -6,10 +6,11 @@ type AvailableRoomsContextStatus = 'loading' | 'listening' | 'error';
 
 interface AvailableRoomsContextValue {
     rooms: Room[];
+    publicRooms: Room[];
     status: AvailableRoomsContextStatus;
 }
 
-const AvailableRoomsContext = createContext<AvailableRoomsContextValue>({ rooms: [], status: 'loading' });
+const AvailableRoomsContext = createContext<AvailableRoomsContextValue>({ rooms: [], publicRooms: [], status: 'loading' });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAvailableRoomsContext = () => useContext(AvailableRoomsContext);
@@ -23,6 +24,10 @@ export function AvailableRoomsContextProvider({ children }: AvailableRoomsContex
     const EventSourceRef = useRef<EventSource | null>(null);
     const [rooms, setRooms] = useState<Room[]>([]);
     const [status, setStatus] = useState<AvailableRoomsContextStatus>('loading');
+
+    const publicRooms = useMemo(() => {
+        return rooms.filter((room) => room.privateRoom !== true);
+    }, [rooms]);
 
     useEffect(() => {
 
@@ -69,7 +74,7 @@ export function AvailableRoomsContextProvider({ children }: AvailableRoomsContex
     }, []);
 
     return (
-        <AvailableRoomsContext.Provider value={{ rooms, status }}>
+        <AvailableRoomsContext.Provider value={{ rooms, publicRooms, status }}>
             {children}
         </AvailableRoomsContext.Provider>
     );

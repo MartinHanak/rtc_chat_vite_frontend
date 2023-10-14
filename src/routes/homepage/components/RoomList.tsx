@@ -15,13 +15,13 @@ export default function RoomList({ filterItems, selectedTypes }: RoomList) {
 
     const roomTypeDisplayOrder: RoomType[] = ['video', 'audio', 'text'];
 
-    const { rooms, status } = useAvailableRoomsContext();
+    const { publicRooms, status } = useAvailableRoomsContext();
 
     const roomsFilteredByType = useMemo(() => {
 
-        return rooms.filter((room) => selectedTypes.includes(room.type));
+        return publicRooms.filter((room) => selectedTypes.includes(room.type));
 
-    }, [selectedTypes, rooms]);
+    }, [selectedTypes, publicRooms]);
 
 
     const roomsFilteredByFilterItems = useMemo(() => {

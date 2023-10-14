@@ -7,6 +7,7 @@ export interface Room {
   type: RoomType;
   description: string;
   createdAt: number;
+  privateRoom: boolean;
 }
 
 export function isRoom(input: unknown): input is Room {
@@ -17,9 +18,11 @@ export function isRoom(input: unknown): input is Room {
     "type" in input &&
     "description" in input &&
     "createdAt" in input &&
+    "privateRoom" in input &&
     typeof input.name === "string" &&
     typeof input.description === "string" &&
     typeof input.type === "string" &&
+    typeof input.privateRoom === "boolean" &&
     (input.type === "video" ||
       input.type === "audio" ||
       input.type === "text") &&

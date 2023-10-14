@@ -1,19 +1,23 @@
-import { Alert, Box, Button, Container, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, Select, SelectChangeEvent, Snackbar, TextField, Typography } from "@mui/material";
+import { Alert, Button, Card, Checkbox, Container, FormControl, FormControlLabel, IconButton, InputLabel, ListItemIcon, ListItemText, MenuItem, Select, SelectChangeEvent, Snackbar, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { BACKEND_URL } from "../../util/config";
 import { RoomType } from "../../types/room";
 import { useNavigate } from "react-router-dom";
+import { nanoid } from "nanoid";
 
 import VideocamIcon from '@mui/icons-material/Videocam';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import CreateIcon from '@mui/icons-material/Create';
 import HeaderFiller from "../../components/HeaderFiller";
+import InfoIcon from '@mui/icons-material/Info';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 export default function NewRoomRoute() {
 
     const [name, setName] = useState<string>('');
     const [type, setType] = useState<RoomType>('video');
     const [description, setDescription] = useState<string>('');
+    const [privateRoom, setPrivateRoom] = useState<boolean>(false);
 
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
@@ -23,6 +27,10 @@ export default function NewRoomRoute() {
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleGeneratingRandomName = () => {
+        setName(nanoid());
     };
 
 
@@ -47,7 +55,8 @@ export default function NewRoomRoute() {
             body: JSON.stringify({
                 name: encodeURIComponent(inputName),
                 type,
-                description
+                description,
+                privateRoom
             })
         }).then((res) => {
             if (res.ok) {
@@ -59,7 +68,7 @@ export default function NewRoomRoute() {
                 navigate(`/room/${encodeURIComponent(inputName)}`);
             } else {
                 setOpen(true);
-                setMessage(`Room with the name ${name} already exists.`);
+                setMessage(`Room with the given name ${name} already exists.`);
                 setSeverity('error');
             }
         }).catch((err) => console.log(err));
@@ -72,18 +81,31 @@ export default function NewRoomRoute() {
     }
 
     return (
-        <Container>
+        <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: "center" }}>
             <HeaderFiller />
-            <Typography variant="h3">Create a new room</Typography>
+            <Typography variant="h3" fontWeight={700} sx={{
+                paddingY: 2,
+                paddingX: 4,
+            }}>
+                Create a new room
+            </Typography>
 
-            <Box
+            <Card
                 component="form"
                 onSubmit={handleSubmit}
                 noValidate
                 autoComplete="off"
+                sx={{
+                    padding: 4,
+                    width: '100%',
+                    maxWidth: '620px',
+                    marginBottom: '360px',
+                    boxShadow: theme => theme.shadows[5],
+                    display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'start',
+                    gap: 4,
+                    backgroundColor: theme => theme.palette.background.secondaryDefault
+                }}
             >
-                <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(e) => setName(e.target.value)} />
-
                 <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                     open={open}
                     onClose={handleClose}
@@ -92,12 +114,29 @@ export default function NewRoomRoute() {
                     <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
                         {message}
                     </Alert>
-
                 </Snackbar>
 
+                <Stack flexDirection={'row'} justifyContent={'center'} alignItems={'center'} width={1} gap={4}>
+                    <TextField id="outlined-basic" label="Name" variant="outlined"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        sx={{ width: 1, flexGrow: 1 }}
+                    />
 
-                <FormControl>
-                    <InputLabel id="type-select-label">Type</InputLabel>
+                    <Tooltip title="Generate a random name">
+                        <IconButton onClick={handleGeneratingRandomName} sx={{
+                            flexShrink: 0, marginRight: 1,
+                            '&.MuiIconButton-root': {
+                                backgroundColor: theme => theme.palette.action.hover
+                            }
+                        }}>
+                            <LightbulbIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Stack>
+
+                <FormControl sx={{ width: 1 }}>
+                    <InputLabel id="type-select-label" >Type</InputLabel>
                     <Select
                         labelId="type-select-label"
                         id="type-select"
@@ -105,6 +144,7 @@ export default function NewRoomRoute() {
                         label="Type"
                         onChange={handleTypeChange}
                         sx={{
+                            width: 1,
                             '& .MuiSelect-select': {
                                 display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'start',
                                 gap: 2
@@ -135,10 +175,31 @@ export default function NewRoomRoute() {
                     </Select>
                 </FormControl>
 
-                <TextField label="Description" multiline rows={4} value={description} onChange={(e) => setDescription(e.target.value)} />
 
-                <Button type="submit"> Confirm </Button>
-            </Box>
+
+                <TextField label="Description" multiline minRows={5}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    sx={{
+                        width: 1
+                    }} />
+
+                <Stack direction={"row"} justifyContent={"start"} alignItems={"center"}>
+                    <FormControlLabel
+                        control={<Checkbox checked={privateRoom} onChange={(e) => setPrivateRoom(e.target.checked)} />}
+                        label="Make the room private?"
+                        labelPlacement="end"
+                        sx={{
+                            marginRight: 1,
+                        }}
+                    />
+                    <Tooltip title="Private rooms are hidden on the home page but anyone with the link can still visit them.">
+                        <InfoIcon />
+                    </Tooltip>
+                </Stack>
+
+                <Button variant="contained" type="submit" sx={{ alignSelf: 'end', marginRight: { xs: 2, sm: 4 } }}> Confirm </Button>
+            </Card>
         </Container>
     );
 }
