@@ -1,18 +1,32 @@
 import { Box, Container, Link, Stack, Typography } from "@mui/material";
 import FAQ from "./FAQ";
-import { grey } from "@mui/material/colors";
 
 export default function Footer() {
 
     return (
-        <Box component="footer" bgcolor={grey[300]}>
+        <Box component="footer" sx={{
+            bgcolor: theme => theme.palette.background.secondaryDefault
+        }}>
             <Container>
                 <FAQ />
 
-                <Stack sx={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <Typography color="black">
+                <Stack sx={{
+                    flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                    paddingBottom: 6,
+                    paddingTop: 24
+                }}>
+                    <Typography>
                         Made by&nbsp;
-                        <Link href="https://martinhanak.com" target="_blank">
+                        <Link href="https://martinhanak.com" target="_blank" sx={{
+                            fontWeight: 700,
+                            color: theme => theme.palette.text.primary,
+                            textDecorationColor: theme => theme.palette.text.primary,
+                            textDecorationThickness: '2px',
+                            textUnderlineOffset: '4px',
+                            "&:hover": {
+                                color: theme => theme.palette.primary.main
+                            }
+                        }}>
                             Martin Hanák
                         </Link>
                     </Typography>

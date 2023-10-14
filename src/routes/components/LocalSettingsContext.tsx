@@ -11,7 +11,7 @@ interface LocalSettingsContextValue {
     theme: Theme;
 }
 
-const LocalSettingsContext = createContext<LocalSettingsContextValue>({ username: '', changeUsername: () => { }, mode: 'light', toggleColorTheme: () => { }, theme: createTheme() });
+const LocalSettingsContext = createContext<LocalSettingsContextValue>({ username: '', changeUsername: () => { }, mode: 'dark', toggleColorTheme: () => { }, theme: createTheme() });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useLocalSettingsContext = () => useContext(LocalSettingsContext);

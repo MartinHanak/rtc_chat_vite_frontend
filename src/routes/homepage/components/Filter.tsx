@@ -28,10 +28,10 @@ export default function Filter({ items, handleItemsChange }: Filter) {
                     <TextField label="" placeholder="Search" {...params}
                         sx={{
                             '& .MuiInputBase-root': {
-                                backgroundColor: 'white'
+                                backgroundColor: theme => theme.palette.background.light
                             },
                             '& .MuiFormLabel-root': {
-                                backgroundColor: 'white',
+                                backgroundColor: theme => theme.palette.background.light,
                                 borderRadius: 5,
                                 paddingX: 1,
                                 transform: 'translate(9px, -9px) scale(0.75)'

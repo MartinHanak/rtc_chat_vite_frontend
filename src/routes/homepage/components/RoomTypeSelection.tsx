@@ -46,13 +46,17 @@ export const StyledRoomTypeToggle = styled(ToggleButton, {
                 gap: '8px',
                 height: '56px',
                 '&.Mui-selected': {
-                    backgroundColor: color.main
+                    backgroundColor: color.main,
+                    color: '#000000',
+                },
+                '&:not(.Mui-selected)': {
+                    color: theme.palette.text.disabled
                 },
                 '&:hover': {
                     backgroundColor: color.light
                 },
                 '&:not(.Mui-selected):hover': {
-                    backgroundColor: theme.palette.grey[100]
+                    backgroundColor: theme.palette.background.light
                 },
                 '&:not(.Mui-selected) .MuiSvgIcon-root': {
                     color: theme.palette.action.disabled

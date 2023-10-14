@@ -22,7 +22,7 @@ export default function RoomCatalog() {
 
     return (
         <Box sx={{ minHeight: '960px', }}>
-            <Box sx={{ width: 1, bgcolor: theme => theme.palette.grey[300] }}>
+            <Box sx={{ width: 1, bgcolor: theme => theme.palette.background.secondaryDefault }}>
 
                 <HeaderFiller />
 
@@ -47,7 +47,7 @@ export default function RoomCatalog() {
                 }}>
 
                     <Box sx={{ flexGrow: 1, flexShrink: 0, flexBasis: { xs: '100%', sm: '50%' } }}>
-                        <Typography variant="h5" color="text.secondary" fontSize={'1.2rem'} sx={{ paddingX: 2 }}>
+                        <Typography variant="h5" color="text.secondary" fontSize={'1.2rem'} sx={{ paddingX: 2, marginBottom: 1 }}>
                             Interested in specific topics?
                         </Typography>
                         <Filter items={filterItems} handleItemsChange={handleFilterItemsChange} />
@@ -58,7 +58,7 @@ export default function RoomCatalog() {
                         paddingLeft: { xs: 0, sm: 4 },
                         paddingTop: { xs: 4, sm: 0 },
                     }}   >
-                        <Typography variant="h5" color="text.secondary" fontSize={'1.2rem'} sx={{ paddingX: 2 }}>
+                        <Typography variant="h5" color="text.secondary" fontSize={'1.2rem'} sx={{ paddingX: 2, marginBottom: 1 }}>
                             How Would You Like to Chat?
                         </Typography>
                         <RoomTypeSelection selected={selectedRoomType} setSelection={handleSelectionChange} />

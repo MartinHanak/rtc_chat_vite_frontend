@@ -5,6 +5,12 @@ import { PaletteColor, SimplePaletteColorOptions } from "@mui/material/styles";
 declare module "@mui/material/styles" {
   interface Palette {
     tertiary: PaletteColor;
+    secondaryDefault: PaletteColor;
+  }
+
+  interface TypeBackground {
+    light: string;
+    secondaryDefault: string;
   }
 
   interface PaletteOptions {
@@ -33,6 +39,12 @@ const getDesignTokens = (mode: PaletteMode) => ({
             main: "#21a464",
             dark: "#177246",
             contrastText: "#000",
+          },
+          background: {
+            default: "#fff",
+            secondaryDefault: "#e0e0e0",
+            paper: "#fff",
+            light: "#f6f6f6",
           },
           tertiary: {
             light: "#ffd96f",
@@ -64,6 +76,8 @@ const getDesignTokens = (mode: PaletteMode) => ({
           background: {
             default: "#121212",
             paper: "#121212",
+            secondaryDefault: "#1e1e1e",
+            light: "#303030",
           },
           divider: "rgba(255, 255, 255, 0.12)",
           text: {

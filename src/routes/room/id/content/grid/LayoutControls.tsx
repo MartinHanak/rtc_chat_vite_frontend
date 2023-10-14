@@ -78,7 +78,7 @@ export default function LayoutControls({ rows, columns, changeRows, changeColumn
                 </Button>
 
 
-                <Box >
+                <Box  >
                     <Stack direction={"row"} justifyContent={"center"} alignItems={"center"} gap={1}
                         sx={{
                             opacity: show ? 1 : 0,
@@ -87,6 +87,7 @@ export default function LayoutControls({ rows, columns, changeRows, changeColumn
                                 duration: 500,
                                 delay: 0
                             }),
+                            marginBottom: 1
                         }}
                     >
                         <Box sx={{
@@ -95,6 +96,7 @@ export default function LayoutControls({ rows, columns, changeRows, changeColumn
                             width: 'max-content',
                             padding: 1,
                             borderRadius: 2,
+                            backgroundColor: theme => theme.palette.background.default
                         }}>
                             <Tooltip title="Columns" placement={"right"}>
                                 <TableRowsRoundedIcon fontSize={"large"} sx={{ transform: 'rotate(90deg)' }} />
@@ -136,6 +138,7 @@ export default function LayoutControls({ rows, columns, changeRows, changeColumn
                             width: 'max-content',
                             padding: 1,
                             borderRadius: 2,
+                            backgroundColor: theme => theme.palette.background.default
                         }}>
                             <Tooltip title="Rows" placement={"right"}>
                                 <TableRowsRoundedIcon fontSize={"large"} />

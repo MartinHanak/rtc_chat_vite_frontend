@@ -77,13 +77,13 @@ export default function FAQ() {
     return (
         <Box sx={{ maxWidth: theme => theme.breakpoints.values.md, marginX: 'auto' }}>
 
-            <Typography variant="h2" >
+            <Typography variant="h2" sx={{ paddingY: 4, fontWeight: 700, paddingLeft: 4 }} >
                 FAQ
             </Typography>
 
             {questions.map((question, index) => {
                 return (
-                    <Accordion key={index}>
+                    <Accordion key={index} sx={{ backgroundColor: theme => theme.palette.background.light }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                         >
@@ -91,7 +91,7 @@ export default function FAQ() {
                                 <Typography fontWeight={"bold"} textAlign={'end'} component="div"
                                     sx={{ minWidth: '24px' }}
                                 >
-                                    {`${index}.`}
+                                    {`${index + 1}.`}
                                 </Typography>
                                 <Typography fontWeight={"bold"}>{`${question.question}`}</Typography>
                             </Stack>

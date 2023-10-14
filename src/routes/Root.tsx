@@ -8,8 +8,8 @@ import { LocalSettingsProvider } from "./components/LocalSettingsContext";
 export default function Root() {
 
     return (
-        <AvailableRoomsContextProvider>
-            <LocalSettingsProvider>
+        <LocalSettingsProvider>
+            <AvailableRoomsContextProvider>
                 <MyThemeProvider>
                     <Header />
 
@@ -18,7 +18,7 @@ export default function Root() {
                     </Box>
 
                 </MyThemeProvider>
-            </LocalSettingsProvider>
-        </AvailableRoomsContextProvider>
+            </AvailableRoomsContextProvider>
+        </LocalSettingsProvider>
     );
 }
