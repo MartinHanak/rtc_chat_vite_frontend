@@ -44,6 +44,7 @@ export default function TextMessages({ show }: TextMessages) {
                     <TextMessage
                         key={`${message.fromSocketId}_${message.time}`}
                         username={message.username}
+                        userColor={message.userColor}
                         message={message.message}
                         time={message.time}
                         show={show}

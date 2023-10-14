@@ -23,11 +23,14 @@ export default function RoomRoute() {
     // room might now exist / deleted
     if (rooms.filter((room) => (room.name === currentRoomName)).length !== 1) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 1, height: 1 }}>
-                <Alert severity='error' sx={{ width: '100%' }}>
-                    {`Room ${currentRoomName} does not exist.`}
-                </Alert>
-            </Box>
+            <Container>
+                <HeaderFiller />
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: 1, height: 1 }}>
+                    <Alert severity='error' sx={{ width: '100%' }}>
+                        {`Room ${currentRoomName} does not exist.`}
+                    </Alert>
+                </Box>
+            </Container>
         );
     }
 

@@ -1,16 +1,17 @@
 import { Box, Stack } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TextMessage {
     username: string;
-    time: number;
+    userColor: string;
+    time?: number;
     message: string;
     show: boolean;
     delay: number;
     shift?: boolean;
 }
 
-export default function TextMessage({ username, time, message, show, delay, shift }: TextMessage) {
+export default function TextMessage({ username, userColor, message, show, delay }: TextMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -28,6 +29,7 @@ export default function TextMessage({ username, time, message, show, delay, shif
 
     }, []);
 
+    /*
     const displayedTime = useMemo<string>(() => {
         const messageDate = new Date(time);
 
@@ -37,6 +39,7 @@ export default function TextMessage({ username, time, message, show, delay, shif
 
         return `${hours}:${minutes}:${seconds}`;
     }, [time]);
+    */
 
     return (
         <Stack sx={{
@@ -53,12 +56,14 @@ export default function TextMessage({ username, time, message, show, delay, shif
             '&:first-of-type': {
                 marginTop: 'auto !important'
             },
-            alignSelf: shift ? 'end' : 'auto'
+            alignSelf: 'end',
+            paddingY: 1,
+            paddingX: 2,
+            borderRadius: '5px'
         }}>
-            <Box>
-                {username} at {displayedTime}
-            </Box>
-            <Box sx={{ whiteSpace: 'pre-line' }}>
+
+            <Box sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
+                <Box sx={{ color: userColor, fontWeight: 700 }} component={"span"}>{username}</Box>:&nbsp;
                 {message}
             </Box>
         </Stack>

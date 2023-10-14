@@ -2,10 +2,11 @@ import { MutableRefObject, createContext, useContext, useEffect, useRef, useStat
 import { Room } from "../../../../types/room";
 import { Socket } from "socket.io-client";
 import { ClientToServerEvents, ServerToClientEvents } from "../../../../types/socketTypes";
-import { userInfo } from "../../../../types/user";
+import { userInfo, userInfoWithColor } from "../../../../types/user";
 import { useLocalSettingsContext } from "../../../components/LocalSettingsContext";
 import { initializeSocket } from "../../../../util/initializeSocket";
 import Loader from "../../../../components/Loader";
+import assignUserColor from "../../../../util/assignUserColor";
 
 interface SocketContextProvider {
     children: React.ReactNode,
@@ -15,6 +16,7 @@ interface SocketContextProvider {
 type messageData = {
     fromSocketId: string,
     username: string,
+    userColor: string,
     message: string,
     time: number;
 };
@@ -42,7 +44,7 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
     const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null);
 
     // websocket state
-    const [connectedUsers, setConnectedUsers] = useState<userInfo[]>([]);
+    const [connectedUsers, setConnectedUsers] = useState<userInfoWithColor[]>([]);
 
     // state for WebRTC offers, answers, ICE-candidates
     const [offers, setOffers] = useState<Record<string, RTCSessionDescriptionInit>>({});
@@ -66,7 +68,20 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
         // room events
         socketRef.current.on("room-users", (users: userInfo[]) => {
             console.log(users);
-            setConnectedUsers(users);
+            setConnectedUsers((previousUsers) => {
+                const newUsers: userInfoWithColor[] = [];
+
+                for (const user of users) {
+                    const oldUser = previousUsers.find((prevUser) => prevUser.socketId === user.socketId);
+                    if (oldUser) {
+                        newUsers.push(oldUser);
+                    } else {
+                        newUsers.push({ ...user, color: assignUserColor() });
+                    }
+                }
+                console.log(newUsers);
+                return newUsers;
+            });
         });
 
         // webRTC events
@@ -145,13 +160,19 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
             const fromUsername = socketIdToUsername.get(fromSocketId);
 
             if (fromUsername) {
-                setMessages((previous) => [...previous,
-                {
-                    fromSocketId,
-                    username: fromUsername,
-                    message,
-                    time
-                }]);
+                setMessages((previous) => {
+                    const user = connectedUsers.find((user) => user.socketId === fromSocketId);
+                    const userColor = user ? user.color : assignUserColor();
+
+                    return [...previous,
+                    {
+                        fromSocketId,
+                        username: fromUsername,
+                        userColor: userColor,
+                        message,
+                        time
+                    }];
+                });
             } else {
                 console.log(`No username found for the socketId ${fromSocketId}`);
             }
