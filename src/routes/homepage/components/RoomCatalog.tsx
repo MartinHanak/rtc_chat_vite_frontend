@@ -22,7 +22,7 @@ export default function RoomCatalog() {
 
     return (
         <Box sx={{ minHeight: '960px', }}>
-            <Box sx={{ width: 1, bgcolor: theme => theme.palette.background.secondaryDefault }}>
+            <Box sx={{ width: 1, bgcolor: theme => theme.palette.background.tertiaryDefault }}>
 
                 <HeaderFiller />
 

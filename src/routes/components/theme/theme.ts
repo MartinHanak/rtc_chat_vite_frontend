@@ -11,6 +11,7 @@ declare module "@mui/material/styles" {
   interface TypeBackground {
     light: string;
     secondaryDefault: string;
+    tertiaryDefault: string;
   }
 
   interface PaletteOptions {
@@ -42,7 +43,8 @@ const getDesignTokens = (mode: PaletteMode) => ({
           },
           background: {
             default: "#fff",
-            secondaryDefault: "#fff", //"#e0e0e0",
+            secondaryDefault: "#fff",
+            tertiaryDefault: "#e0e0e0",
             paper: "#fff",
             light: "#f6f6f6",
           },
@@ -77,6 +79,7 @@ const getDesignTokens = (mode: PaletteMode) => ({
             default: "#121212",
             paper: "#121212",
             secondaryDefault: "#1e1e1e",
+            tertiaryDefault: "#1e1e1e",
             light: "#303030",
           },
           divider: "rgba(255, 255, 255, 0.12)",

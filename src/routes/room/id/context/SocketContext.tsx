@@ -34,7 +34,7 @@ interface SocketContextValue {
 }
 
 
-const SocketContext = createContext<SocketContextValue>({ room: { name: 'loading', type: 'video', createdAt: 0, description: '' }, socketRef: null, users: [], offers: {}, answers: {}, iceCandidates: {}, messages: [] });
+const SocketContext = createContext<SocketContextValue>({ room: { name: 'loading', type: 'video', createdAt: 0, description: '', privateRoom: false }, socketRef: null, users: [], offers: {}, answers: {}, iceCandidates: {}, messages: [] });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useSocketContext = () => useContext(SocketContext);
@@ -55,14 +55,14 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
     const [messages, setMessages] = useState<messageData[]>([]);
 
     // username
-    const { username } = useLocalSettingsContext();
+    const { username, userColor } = useLocalSettingsContext();
 
 
     // only one socket is active for one room
     useEffect(() => {
         console.log(`Initializing the socket for the room ${room.name} with the username ${username}`);
 
-        socketRef.current = initializeSocket(room.name, username);
+        socketRef.current = initializeSocket(room.name, username, userColor);
 
 
         // room events
@@ -74,9 +74,13 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
                 for (const user of users) {
                     const oldUser = previousUsers.find((prevUser) => prevUser.socketId === user.socketId);
                     if (oldUser) {
-                        newUsers.push(oldUser);
+                        newUsers.push({
+                            ...oldUser,
+                            color: user.color ? user.color : oldUser.color
+                        });
                     } else {
-                        newUsers.push({ ...user, color: assignUserColor() });
+                        const userColor = user.color ? user.color : assignUserColor();
+                        newUsers.push({ ...user, color: userColor });
                     }
                 }
                 console.log(newUsers);
@@ -137,7 +141,8 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
             socketRef.current?.disconnect();
         };
 
-
+        // userColor intentionally not included
+        // not important enough to reload the connection
     }, [room, username]);
 
     // chat events separate: depend on connectedUsers state
@@ -148,27 +153,27 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
             return;
         }
 
-        const socketIdToUsername = new Map<string, string>();
+        console.log('Updating messages useEffect');
+        const socketIdToUser = new Map<string, userInfoWithColor>();
 
         connectedUsers.forEach((userInfo) => {
-            socketIdToUsername.set(userInfo.socketId, userInfo.username);
+            socketIdToUser.set(userInfo.socketId, userInfo);
         });
 
         // chat events
         socketRef.current.on("message", (fromSocketId: string, message: string, time) => {
 
-            const fromUsername = socketIdToUsername.get(fromSocketId);
+            const fromUser = socketIdToUser.get(fromSocketId);
 
-            if (fromUsername) {
+            if (fromUser) {
                 setMessages((previous) => {
-                    const user = connectedUsers.find((user) => user.socketId === fromSocketId);
-                    const userColor = user ? user.color : assignUserColor();
+                    console.log(`Color: ${fromUser.color}`);
 
                     return [...previous,
                     {
                         fromSocketId,
-                        username: fromUsername,
-                        userColor: userColor,
+                        username: fromUser.username,
+                        userColor: fromUser.color,
                         message,
                         time
                     }];
@@ -186,6 +191,19 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
         };
 
     }, [connectedUsers]);
+
+    useEffect(() => {
+        // update color after 500ms 
+        const timeoutId = setTimeout(() => {
+            if (!socketRef || !socketRef.current || typeof userColor !== 'string') {
+                return;
+            }
+            console.log(`changing color to ${userColor}`);
+            socketRef.current.emit("colorChange", socketRef.current?.id, userColor);
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [userColor]);
 
     return (
         <>{connectedUsers.length > 0 ?

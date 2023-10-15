@@ -5,7 +5,7 @@ export default function Footer() {
 
     return (
         <Box component="footer" sx={{
-            bgcolor: theme => theme.palette.background.secondaryDefault,
+            bgcolor: theme => theme.palette.background.tertiaryDefault,
             marginTop: 4
         }}>
             <Container>

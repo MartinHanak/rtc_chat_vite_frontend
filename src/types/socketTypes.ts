@@ -55,4 +55,7 @@ export interface ClientToServerEvents {
   // chat
   // 1-to-many connection
   message: (fromSocketId: string, message: string, time: number) => void;
+
+  // user settings updates
+  colorChange: (fromSocketId: string, newColor: string) => void;
 }

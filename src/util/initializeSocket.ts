@@ -5,14 +5,27 @@ import {
 } from "../types/socketTypes";
 import { BACKEND_URL } from "./config";
 
-export function initializeSocket(roomId: string, username: string) {
+export function initializeSocket(
+  roomId: string,
+  username: string,
+  userColor: string | undefined
+) {
+  let extraHeaders: { [header: string]: string } = {
+    room: `${encodeURIComponent(roomId)}`,
+    username: username,
+  };
+
+  if (userColor) {
+    extraHeaders = {
+      ...extraHeaders,
+      userColor: userColor,
+    };
+  }
+
   const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
     `${BACKEND_URL}`,
     {
-      extraHeaders: {
-        room: `${encodeURIComponent(roomId)}`,
-        username: username,
-      },
+      extraHeaders: extraHeaders,
     }
   );
 

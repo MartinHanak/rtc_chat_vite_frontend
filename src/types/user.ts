@@ -1,6 +1,7 @@
 export interface userInfo {
   socketId: string;
   username: string;
+  color?: string;
 }
 
 export interface userInfoWithColor extends userInfo {

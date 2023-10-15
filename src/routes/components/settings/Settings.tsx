@@ -1,4 +1,5 @@
 import SettingsHeader from "./SettingsHeader";
+import UserColorSettings from "./UserColorSettings";
 import UsernameSettings from "./UsernameSettings";
 
 interface Settings {
@@ -11,6 +12,8 @@ export default function Settings({ closeModal }: Settings) {
         <>
             <SettingsHeader closeModal={closeModal} />
             <UsernameSettings />
+
+            <UserColorSettings />
         </>
     );
 }
