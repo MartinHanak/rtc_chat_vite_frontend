@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Box, Button, Modal, Tooltip } from "@mui/material";
+import { Button, Card, Modal, Tooltip } from "@mui/material";
 import Settings from "./settings/Settings";
 
 
@@ -23,21 +23,27 @@ export function LocalSettingsModal() {
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
             >
-
-                <Box sx={{
-                    position: 'absolute', top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 400,
-                    bgcolor: 'background.paper',
-                    border: '2px solid #000',
-                    boxShadow: 24,
-                    p: 4,
-                }}>
+                <Card
+                    sx={{
+                        maxWidth: '380px',
+                        maxHeight: '580px',
+                        overflowY: 'auto',
+                        padding: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        alignItems: 'stretch',
+                        gap: 2
+                    }}>
 
                     <Settings closeModal={handleClose} />
-                </Box>
+                </Card>
             </Modal>
         </>
     );

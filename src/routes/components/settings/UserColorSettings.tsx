@@ -4,6 +4,7 @@ import assignUserColor from "../../../util/assignUserColor";
 import { IconButton, Stack, Tooltip } from "@mui/material";
 import PaletteIcon from '@mui/icons-material/Palette';
 import { useEffect, useState } from "react";
+import convertHexRGB from "../../../util/convertHexRGB";
 
 export default function UserColorSettings() {
 
@@ -21,13 +22,24 @@ export default function UserColorSettings() {
 
 
     return (
-        <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+        <Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"} gap={2}>
 
-            <MuiColorInput value={inputValue} onChange={(newValue) => setInputValue(newValue)} label={"User color"} />
+            <MuiColorInput
+                value={inputValue}
+                onChange={(newValue) => setInputValue(newValue)}
+                label={"User color"}
+                sx={{
+                    flexShrink: 1,
+                    width: '100%',
+                }}
+            />
 
             <Tooltip title="Random color">
-                <IconButton onClick={() => setInputValue(assignUserColor())}
-                    sx={{ backgroundColor: theme => theme.palette.action.hover }}
+                <IconButton onClick={() => setInputValue(convertHexRGB(assignUserColor()))}
+                    sx={{
+                        marginLeft: 0,
+                        backgroundColor: theme => theme.palette.action.hover
+                    }}
                 >
                     <PaletteIcon />
                 </IconButton>

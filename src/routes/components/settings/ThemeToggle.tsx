@@ -1,5 +1,6 @@
 import { Switch, styled } from "@mui/material";
 import { useLocalSettingsContext } from "../LocalSettingsContext";
+import { useEffect, useState } from "react";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 62,
@@ -50,12 +51,27 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function ThemeToggle() {
     const { toggleColorTheme, mode } = useLocalSettingsContext();
+
+    const [checked, setChecked] = useState(mode === 'dark');
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            const selectedMode = checked ? 'dark' : 'light';
+            if (selectedMode !== mode) {
+                toggleColorTheme();
+            }
+        }, 200);
+
+        return () => clearTimeout(timeoutId);
+    });
+
+
     return (
 
         <MaterialUISwitch
-            sx={{ m: 1 }}
-            checked={mode === 'dark'}
-            onClick={() => toggleColorTheme()}
+            sx={{ m: 2, position: 'absolute', top: 0, left: 0 }}
+            checked={checked}
+            onClick={() => setChecked((prev) => !prev)}
         />
 
     );
