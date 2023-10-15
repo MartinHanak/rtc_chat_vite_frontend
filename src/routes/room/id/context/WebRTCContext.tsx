@@ -10,9 +10,11 @@ interface WebRTCContextValue {
     peerStreamReady: string[],
     dataChannels: MutableRefObject<Record<string, RTCDataChannel>> | null,
     dataChannelReady: string[],
+    fileDataChannels: MutableRefObject<Record<string, RTCDataChannel>> | null,
+    fileDataChannelReady: string[],
 }
 
-const WebRTCContext = createContext<WebRTCContextValue>({ connections: null, streams: null, dataChannels: null, peerStreamReady: [], dataChannelReady: [] });
+const WebRTCContext = createContext<WebRTCContextValue>({ connections: null, streams: null, dataChannels: null, fileDataChannels: null, peerStreamReady: [], dataChannelReady: [], fileDataChannelReady: [] });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useWebRTCContext = () => useContext(WebRTCContext);
@@ -26,9 +28,11 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
     const peerConnectionRef = useRef<Record<string, RTCPeerConnection>>({});
     const peerStreamRef = useRef<Record<string, MediaStream>>({});
     const dataChannelRef = useRef<Record<string, RTCDataChannel>>({});
+    const fileDataChannelRef = useRef<Record<string, RTCDataChannel>>({});
 
     const [peerStreamReady, setPeerStreamReady] = useState<string[]>([]);
     const [dataChannelReady, setDataChannelReady] = useState<string[]>([]);
+    const [fileDataChannelReady, setFileDataChannelReady] = useState<string[]>([]);
 
     const { room, socketRef, users, offers, answers, iceCandidates } = useSocketContext();
 
@@ -59,12 +63,15 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
         // data channels have to be created BEFORE answer/offer
         // https://stackoverflow.com/questions/43788872/how-are-data-channels-negotiated-between-two-peers-with-webrtc/43788873#43788873
 
-        const dataChannel = connection.createDataChannel(toSocketId, { negotiated: true, id: 0, ordered: false });
+        const dataChannel = connection.createDataChannel(toSocketId, { negotiated: true, id: 0, ordered: true });
+        const fileDataChannel = connection.createDataChannel(toSocketId, { negotiated: true, id: 1, ordered: true });
 
         dataChannelRef.current[toSocketId] = dataChannel;
+        fileDataChannelRef.current[toSocketId] = fileDataChannel;
 
         // default is Blob
-        // dataChannel.binaryType = 'arraybuffer';
+        dataChannel.binaryType = 'arraybuffer';
+        fileDataChannel.binaryType = 'blob';
 
         // data channel events 
 
@@ -73,16 +80,32 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
             console.log(event);
             setDataChannelReady((previous) => [...previous, toSocketId]);
         });
+        fileDataChannel.addEventListener('open', (event) => {
+            console.log(`File data channel opened`);
+            console.log(event);
+            setFileDataChannelReady((previous) => [...previous, toSocketId]);
+        });
 
         dataChannel.addEventListener('close', (event) => {
             console.log(`Data channel closed`);
             console.log(event);
         });
+        fileDataChannel.addEventListener('close', (event) => {
+            console.log(`File data channel closed`);
+            console.log(event);
+        });
+
 
         dataChannel.addEventListener('message', (event) => {
             console.log(`Data channel message received`);
             console.log(event.data);
         });
+        fileDataChannel.addEventListener('message', (event) => {
+            console.log(`File data channel message received`);
+            console.log(event.data);
+        });
+
+
 
         // connection events
 
@@ -313,7 +336,15 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
     }, []);
 
     return (
-        <WebRTCContext.Provider value={{ connections: peerConnectionRef, streams: peerStreamRef, dataChannels: dataChannelRef, peerStreamReady, dataChannelReady }}>
+        <WebRTCContext.Provider value={{
+            connections: peerConnectionRef,
+            streams: peerStreamRef,
+            dataChannels: dataChannelRef,
+            fileDataChannels: fileDataChannelRef,
+            peerStreamReady,
+            dataChannelReady,
+            fileDataChannelReady,
+        }}>
             {children}
         </WebRTCContext.Provider>
     );
