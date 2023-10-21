@@ -148,8 +148,6 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
 
             if (fromUser) {
                 setMessages((previous) => {
-                    console.log(`Color: ${fromUser.color}`);
-
                     return [...previous,
                     {
                         fromSocketId,

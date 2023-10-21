@@ -4,6 +4,7 @@ import { Room } from "../../../types/room";
 import { SocketContextProvider } from "./context/SocketContext";
 import { LocalStreamProvider } from "./context/LocalStreamProvider";
 import { WebRTCContextProvider } from "./context/WebRTCContext";
+import { WebRTCMessagesContextProvider } from "./context/WebRTCMessagesContext";
 
 interface RoomContext {
     children: React.ReactNode,
@@ -16,7 +17,9 @@ export default function RoomContext({ children, room }: RoomContext) {
             <SocketContextProvider room={room}>
                 <LocalStreamProvider >
                     <WebRTCContextProvider>
-                        {children}
+                        <WebRTCMessagesContextProvider>
+                            {children}
+                        </WebRTCMessagesContextProvider>
                     </WebRTCContextProvider>
                 </LocalStreamProvider>
             </SocketContextProvider>

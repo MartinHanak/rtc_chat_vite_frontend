@@ -35,7 +35,6 @@ export default function GridDisplayControls({ streams, setHeight, height, toggle
     useEffect(() => {
         if (containerRef && containerRef.current) {
             const containerHeight = containerRef.current.clientHeight;
-            console.log(`Height is ${containerHeight}`);
             setHeight(containerHeight);
         }
     }, [setHeight]);

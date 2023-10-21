@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import { useSocketContext } from "../../context/SocketContext";
 import TextMessage from "./TextMessage";
 import { useEffect, useRef } from "react";
+import { useWebRTCMessagesContext } from "../../context/WebRTCMessagesContext";
 
 interface TextMessages {
     show: boolean;
@@ -11,6 +12,8 @@ export default function TextMessages({ show }: TextMessages) {
 
     const { messages, socketRef } = useSocketContext();
 
+    const { fileMessages } = useWebRTCMessagesContext();
+
 
     // auto-scroll when new message appears
     const chatBottomRef = useRef<HTMLDivElement>(null);
@@ -18,6 +21,22 @@ export default function TextMessages({ show }: TextMessages) {
     useEffect(() => {
         chatBottomRef.current?.scrollIntoView();
     }, [messages]);
+
+
+
+    const handleDownload = (inputBlob: Blob) => {
+        const blobUrl = URL.createObjectURL(inputBlob);
+
+        // Directly set the anchor's href and download attributes
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = `example.png`; // Set the file name
+
+        downloadLink.click();
+
+        // Release the Blob URL
+        URL.revokeObjectURL(blobUrl);
+    };
 
     return (
         <Box sx={{
@@ -55,6 +74,15 @@ export default function TextMessages({ show }: TextMessages) {
             })}
 
             <div ref={chatBottomRef}></div>
+            <Box sx={{ pointerEvents: 'auto' }}>
+                {fileMessages.map((msg, index) => {
+                    return (
+                        <a key={`file_msg_${index}`} href={"#"}
+                            onClick={() => handleDownload(msg.file)}
+                        >{'FILE DOWNLOAD'}</a>
+                    );
+                })}
+            </Box>
         </Box>
     );
 }
