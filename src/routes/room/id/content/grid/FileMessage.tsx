@@ -1,15 +1,16 @@
 import { Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 
-interface TextMessage {
+interface FileMessage {
     username: string;
     userColor: string;
-    message: string;
+    file: Blob;
     show: boolean;
     delay: number;
 }
 
-export default function TextMessage({ username, userColor, message, show, delay }: TextMessage) {
+
+export default function FileMessage({ username, userColor, file, show, delay }: FileMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -27,17 +28,24 @@ export default function TextMessage({ username, userColor, message, show, delay 
 
     }, []);
 
-    /*
-    const displayedTime = useMemo<string>(() => {
-        const messageDate = new Date(time);
+    // const handleDownload = (inputBlob: Blob) => {
+    //     const blobUrl = URL.createObjectURL(inputBlob);
 
-        const hours = messageDate.getHours().toString().padStart(2, '0');
-        const minutes = messageDate.getMinutes().toString().padStart(2, '0');
-        const seconds = messageDate.getSeconds().toString().padStart(2, '0');
+    //     // Directly set the anchor's href and download attributes
+    //     const downloadLink = document.createElement('a');
+    //     downloadLink.href = blobUrl;
+    //     downloadLink.download = `example.png`; // Set the file name
 
-        return `${hours}:${minutes}:${seconds}`;
-    }, [time]);
-    */
+    //     downloadLink.click();
+
+    //     // Release the Blob URL
+    //     URL.revokeObjectURL(blobUrl);
+    // };
+
+    const getDownloadLink = (file: Blob) => {
+        return URL.createObjectURL(file);
+    };
+
 
     return (
         <Stack sx={{
@@ -62,7 +70,7 @@ export default function TextMessage({ username, userColor, message, show, delay 
 
             <Box sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
                 <Box sx={{ color: userColor, fontWeight: 700 }} component={"span"}>{username}</Box>:&nbsp;
-                {message}
+                <a href={getDownloadLink(file)} download={'file.png'}>FILE DOWNLOAD</a>
             </Box>
         </Stack>
     );

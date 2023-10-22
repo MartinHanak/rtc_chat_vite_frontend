@@ -1,14 +1,14 @@
 import { Box, Button, Stack, Tooltip } from "@mui/material";
 import ChatIcon from '@mui/icons-material/Chat';
-import TextChatInput from "./TextChatInput";
-import TextMessages from "./TextMessages";
+import ChatInput from "./ChatInput";
+import Messages from "./Messages";
 import { useState } from "react";
 
-interface TextChatOverlay {
+interface ChatOverlay {
     offset: number;
 }
 
-export default function TextChatOverlay({ offset }: TextChatOverlay) {
+export default function ChatOverlay({ offset }: ChatOverlay) {
 
     const [showChat, setShowChat] = useState(false);
 
@@ -41,11 +41,11 @@ export default function TextChatOverlay({ offset }: TextChatOverlay) {
                     display: 'flex',
 
                 }}>
-                    <TextMessages show={showChat} />
+                    <Messages show={showChat} />
                 </Box>
 
                 <Box sx={{}}>
-                    <TextChatInput show={showChat} />
+                    <ChatInput show={showChat} />
                 </Box>
             </Stack >
 

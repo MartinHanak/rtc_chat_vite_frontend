@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useSocketContext } from "./SocketContext";
 import { useWebRTCContext } from "./WebRTCContext";
 import { userInfo } from "../../../../types/user";
+import { textMessage, fileMessage } from "../../../../types/message";
 
 
 interface WebRTCMessagesContextValue {
@@ -30,18 +31,6 @@ type connection = {
     fileMessageHandler?: (e: MessageEvent) => void;
 };
 
-type textMessage = {
-    time: number;
-    userInfo: userInfo;
-    message: string;
-};
-
-type fileMessage = {
-    time: number;
-    userInfo: userInfo;
-    file: Blob;
-};
-
 export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContextProvider) {
 
     const [connections, setConnections] = useState<Map<string, connection>>(new Map());
@@ -49,26 +38,25 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
     const [messages, setMessages] = useState<textMessage[]>([]);
     const [fileMessages, setFileMessages] = useState<fileMessage[]>([]);
 
-    const { users } = useSocketContext();
+    const { users, socketRef } = useSocketContext();
     const { dataChannels, dataChannelReady, fileDataChannelReady, fileDataChannels } = useWebRTCContext();
 
-    // const localUserInfo = useMemo(() => {
-    //     const id = socketRef?.current?.id ?? '';
+    const localUserInfo = useMemo(() => {
+        const id = socketRef?.current?.id ?? '';
 
-    //     const localUser = users.find((user) => user.socketId === id);
+        const localUser = users.find((user) => user.socketId === id);
 
-    //     if (localUser) {
-    //         return localUser;
-    //     } else {
-    //         const newUserInfo: userInfo = {
-    //             socketId: '',
-    //             color: '',
-    //             username: ''
-    //         };
-    //         return newUserInfo;
-    //     }
-    // }, []);
-
+        if (localUser) {
+            return localUser;
+        } else {
+            const newUserInfo: userInfo = {
+                socketId: '',
+                color: '',
+                username: ''
+            };
+            return newUserInfo;
+        }
+    }, [users, socketRef]);
 
     useEffect(() => {
 
@@ -108,6 +96,23 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
     }, [users, dataChannels, dataChannelReady, fileDataChannelReady, fileDataChannels]);
 
     useEffect(() => {
+        function createTextMessageHandler(con: connection) {
+            return (event: MessageEvent) => {
+                const message = event.data as string;
+                console.log('Incoming WebRTC message');
+                console.log(message);
+                insertTextMessage(message, Date.now(), con.userInfo);
+            };
+        }
+
+        function createFileMessageHandler(con: connection) {
+            return (event: MessageEvent) => {
+                const data = event.data as Blob;
+                console.log(data);
+                insertFileMessage(data, Date.now(), con.userInfo);
+            };
+        }
+
         connections.forEach((con) => {
             const textHandler = createTextMessageHandler(con);
             con.textMessageHandler = textHandler;
@@ -117,6 +122,7 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
             con.fileMessageHandler = fileHandler;
             con.fileDataChannel.addEventListener('message', fileHandler);
         });
+
         // connections cleanup
         return () => {
             connections.forEach((con) => {
@@ -126,38 +132,12 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
                     con.fileDataChannel.removeEventListener('message', con.fileMessageHandler);
             });
         };
+
     }, [connections]);
 
-    function createTextMessageHandler(con: connection) {
-        return (event: MessageEvent) => {
-            const message = event.data as string;
-            console.log('Incoming WebRTC message');
-            console.log(message);
-            setMessages((prev) => [...prev,
-            {
-                time: Date.now(),
-                userInfo: con.userInfo,
-                message: message
-            }
-            ]);
-        };
-    }
-
-    function createFileMessageHandler(con: connection) {
-        return (event: MessageEvent) => {
-            const data = event.data as Blob;
-            console.log(data);
-            setFileMessages((prev) => [...prev,
-            {
-                time: Date.now(),
-                userInfo: con.userInfo,
-                file: data
-            }
-            ]);
-        };
-    }
-
     const sendMessage = (inputString: string) => {
+
+        insertTextMessage(inputString, Date.now(), localUserInfo);
 
         connections.forEach((con) => {
             con.dataChannel.send(inputString);
@@ -165,11 +145,34 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
     };
 
     const sendFileMessage = (input: Blob) => {
+
+        insertFileMessage(input, Date.now(), localUserInfo);
+
         connections.forEach((con) => {
             con.fileDataChannel.send(input);
         });
 
     };
+
+    function insertTextMessage(message: string, time: number, userInfo: userInfo) {
+        setMessages((prev) => [...prev,
+        {
+            time: time,
+            userInfo: userInfo,
+            message: message
+        }
+        ]);
+    }
+
+    function insertFileMessage(file: Blob, time: number, userInfo: userInfo) {
+        setFileMessages((prev) => [...prev,
+        {
+            time: time,
+            userInfo: userInfo,
+            file: file
+        }
+        ]);
+    }
 
     return (
         <WebRTCMessagesContext.Provider value={{

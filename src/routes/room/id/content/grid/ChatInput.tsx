@@ -6,11 +6,11 @@ import { useWebRTCMessagesContext } from "../../context/WebRTCMessagesContext";
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import FileChip from "./FileChip";
 
-interface TextChatInput {
+interface ChatInput {
     show: boolean;
 }
 
-export default function TextChatInput({ show }: TextChatInput) {
+export default function ChatInput({ show }: ChatInput) {
 
     const [inputText, setInputText] = useState<string>('');
     const [inputFiles, setInputFiles] = useState<File[]>([]);

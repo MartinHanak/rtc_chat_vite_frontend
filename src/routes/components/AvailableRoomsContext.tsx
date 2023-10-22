@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Room, isRoom } from "../../types/room";
 import { BACKEND_URL } from "../../util/config";
+import { userInfo } from "../../types/user";
 
 type AvailableRoomsContextStatus = 'loading' | 'listening' | 'error';
 
@@ -79,3 +80,14 @@ export function AvailableRoomsContextProvider({ children }: AvailableRoomsContex
         </AvailableRoomsContext.Provider>
     );
 }
+export type textMessage = {
+    time: number;
+    userInfo: userInfo;
+    message: string;
+};
+
+export type fileMessage = {
+    time: number;
+    userInfo: userInfo;
+    file: Blob;
+};
