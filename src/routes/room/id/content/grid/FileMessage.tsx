@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 interface FileMessage {
     username: string;
     userColor: string;
-    file: Blob;
+    file: File;
+    fileName: string;
+    type: string;
     show: boolean;
     delay: number;
 }
 
 
-export default function FileMessage({ username, userColor, file, show, delay }: FileMessage) {
+export default function FileMessage({ username, userColor, file, fileName, show, delay }: FileMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -42,7 +44,7 @@ export default function FileMessage({ username, userColor, file, show, delay }: 
     //     URL.revokeObjectURL(blobUrl);
     // };
 
-    const getDownloadLink = (file: Blob) => {
+    const getDownloadLink = (file: File) => {
         return URL.createObjectURL(file);
     };
 
@@ -70,7 +72,7 @@ export default function FileMessage({ username, userColor, file, show, delay }: 
 
             <Box sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
                 <Box sx={{ color: userColor, fontWeight: 700 }} component={"span"}>{username}</Box>:&nbsp;
-                <a href={getDownloadLink(file)} download={'file.png'}>FILE DOWNLOAD</a>
+                <a href={getDownloadLink(file)} download={fileName}>{fileName}</a>
             </Box>
         </Stack>
     );

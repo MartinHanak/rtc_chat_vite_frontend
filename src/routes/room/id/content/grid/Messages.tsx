@@ -91,6 +91,8 @@ export default function Messages({ show }: Messages) {
                             username={message.userInfo.username}
                             userColor={message.userInfo.color}
                             file={message.file}
+                            fileName={message.fileName}
+                            type={message.type}
                             show={show}
                             delay={200 * (messages.length - 1 - index)}
                         />

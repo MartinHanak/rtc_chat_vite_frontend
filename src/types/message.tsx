@@ -10,7 +10,9 @@ export type textMessage = {
 export type fileMessage = {
     time: number;
     userInfo: userInfo;
-    file: Blob;
+    file: File;
+    fileName: string;
+    type: string;
 };
 
 
@@ -32,6 +34,8 @@ export function isFileMessage(input: unknown): input is fileMessage {
         "time" in input &&
         "userInfo" in input &&
         "file" in input &&
-        input.file instanceof Blob
+        "fileName" in input &&
+        "type" in input &&
+        input.file instanceof File
     );
 }

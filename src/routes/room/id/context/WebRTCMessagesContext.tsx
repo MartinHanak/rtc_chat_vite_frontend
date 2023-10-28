@@ -9,7 +9,7 @@ interface WebRTCMessagesContextValue {
     messages: textMessage[],
     fileMessages: fileMessage[],
     sendMessage: (input: string) => void,
-    sendFileMessage: (file: Blob) => void,
+    sendFileMessage: (file: File) => void,
 }
 
 
@@ -109,7 +109,26 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
             return (event: MessageEvent) => {
                 const data = event.data as Blob;
                 console.log(data);
-                insertFileMessage(data, Date.now(), con.userInfo);
+
+                data.text().then((blobText) => {
+                    const delimiter = "|||";
+                    const blobParts = blobText.split(delimiter);
+                    if (blobParts.length < 3) {
+                        console.error('Could not parse incoming Blob data');
+                    }
+                    const fileName = blobParts[0];
+                    const type = blobParts[1];
+
+                    const blobData = data.slice(fileName.length + type.length + 2 * delimiter.length);
+
+                    const file = new File([blobData], fileName, { type: type });
+                    console.log(file);
+
+                    insertFileMessage(file, fileName, type, Date.now(), con.userInfo);
+
+                }).catch((err) => console.log(err));
+
+
             };
         }
 
@@ -144,12 +163,19 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
         });
     };
 
-    const sendFileMessage = (input: Blob) => {
+    const sendFileMessage = (input: File) => {
+        console.log('sending');
+        console.log(input);
 
-        insertFileMessage(input, Date.now(), localUserInfo);
+        insertFileMessage(input, input.name, input.type, Date.now(), localUserInfo);
+
+        // File is converted to Blob in the datachannel
+        // info is lost
+        const serializedData = `${input.name}|||${input.type}|||`;
+        const dataToSend = new Blob([serializedData, input]);
 
         connections.forEach((con) => {
-            con.fileDataChannel.send(input);
+            con.fileDataChannel.send(dataToSend);
         });
 
     };
@@ -164,12 +190,14 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
         ]);
     }
 
-    function insertFileMessage(file: Blob, time: number, userInfo: userInfo) {
+    function insertFileMessage(file: File, fileName: string, type: string, time: number, userInfo: userInfo) {
         setFileMessages((prev) => [...prev,
         {
             time: time,
             userInfo: userInfo,
-            file: file
+            file: file,
+            fileName: fileName,
+            type: type
         }
         ]);
     }
