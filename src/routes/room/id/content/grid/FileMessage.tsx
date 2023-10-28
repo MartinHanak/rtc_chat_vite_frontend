@@ -1,5 +1,7 @@
 import { Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
+import FileImage from "./FileImage";
+import FileVideo from "./FileVideo";
 
 interface FileMessage {
     username: string;
@@ -12,7 +14,7 @@ interface FileMessage {
 }
 
 
-export default function FileMessage({ username, userColor, file, fileName, show, delay }: FileMessage) {
+export default function FileMessage({ username, userColor, file, fileName, type, show, delay }: FileMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -73,6 +75,9 @@ export default function FileMessage({ username, userColor, file, fileName, show,
             <Box sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>
                 <Box sx={{ color: userColor, fontWeight: 700 }} component={"span"}>{username}</Box>:&nbsp;
                 <a href={getDownloadLink(file)} download={fileName}>{fileName}</a>
+
+                {type.slice(0, 5) === 'image' && <FileImage file={file} />}
+                {type.slice(0, 5) === 'video' && <FileVideo file={file} />}
             </Box>
         </Stack>
     );
