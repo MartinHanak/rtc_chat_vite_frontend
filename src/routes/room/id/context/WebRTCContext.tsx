@@ -128,8 +128,41 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
             if (!(toSocketId in peerStreamRef.current)) {
                 console.log(`Adding a peer stream`);
 
-                peerStreamRef.current[toSocketId] = event.streams[0];
+                // const videoTrack = event.streams[0].getVideoTracks()[0];
+                // const audioTrack = event.streams[0].getAudioTracks()[0];
+                // const audioContext = new AudioContext();
+                // const gainNode = audioContext.createGain();
+                // // optional contraints
+                // // audioTrack.applyConstraints({ echoCancellation: false });
+                // const audioSourceNode = audioContext.createMediaStreamSource(new MediaStream([audioTrack]));
+                // audioSourceNode.connect(gainNode);
+                // gainNode.connect(audioContext.destination);
+                // gainNode.gain.value = 1.0;
 
+                // const audioDestination = audioContext.createMediaStreamDestination();
+                // gainNode.connect(audioDestination);
+
+                // const modifiedMediaStream = new MediaStream();
+                // modifiedMediaStream.addTrack(videoTrack);
+                // modifiedMediaStream.addTrack(audioDestination.stream.getAudioTracks()[0]);
+                const videoTrack = event.streams[0].getVideoTracks()[0];
+                const audioTrack = event.streams[0].getAudioTracks()[0];
+
+                const audioContext = new AudioContext();
+                const source = audioContext.createMediaStreamSource(new MediaStream([audioTrack]));
+                const destination = audioContext.createMediaStreamDestination();
+
+                const gainNode = audioContext.createGain();
+                gainNode.gain.value = 100;
+                source.connect(gainNode);
+                gainNode.connect(destination);
+
+                const modifiedAudioTrack = destination.stream.getAudioTracks()[0];
+
+                const modifiedMediaStream = new MediaStream([videoTrack, modifiedAudioTrack]);
+
+
+                peerStreamRef.current[toSocketId] = modifiedMediaStream;
                 setPeerStreamReady((previous) => [...previous, toSocketId]);
             }
 
