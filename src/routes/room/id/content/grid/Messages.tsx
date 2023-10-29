@@ -14,7 +14,7 @@ export default function Messages({ show }: Messages) {
 
     const { messages, fileMessages } = useWebRTCMessagesContext();
 
-    const combinedMessages = useMemo(() => {
+    const combinedMessages: Array<textMessage | fileMessage> = useMemo(() => {
         let textIndex = 0;
         let fileIndex = 0;
 
@@ -46,6 +46,18 @@ export default function Messages({ show }: Messages) {
 
     // auto-scroll when new message appears
     const chatBottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        // wait for the video/image load before scrolling
+        const id = setTimeout(() => {
+            chatBottomRef.current?.scrollIntoView();
+        }, 300);
+
+        return () => {
+            clearTimeout(id);
+        };
+
+    }, [fileMessages]);
 
     useEffect(() => {
         chatBottomRef.current?.scrollIntoView();
@@ -81,7 +93,7 @@ export default function Messages({ show }: Messages) {
                             userColor={message.userInfo.color}
                             message={message.message}
                             show={show}
-                            delay={200 * (messages.length - 1 - index)}
+                            delay={200 * (combinedMessages.length - 1 - index)}
                         />
                     );
                 } else if (isFileMessage(message)) {
@@ -94,7 +106,7 @@ export default function Messages({ show }: Messages) {
                             fileName={message.fileName}
                             type={message.type}
                             show={show}
-                            delay={200 * (messages.length - 1 - index)}
+                            delay={200 * (combinedMessages.length - 1 - index)}
                         />
                     );
 
