@@ -1,5 +1,5 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { useSocketContext } from "../../context/SocketContext";
 import { useWebRTCMessagesContext } from "../../context/WebRTCMessagesContext";
 
@@ -19,7 +19,7 @@ export default function ChatInput({ show }: ChatInput) {
 
     const { sendMessage, sendFileMessage } = useWebRTCMessagesContext();
 
-    const handleSendMessage = () => {
+    const handleSendMessage = useCallback(() => {
         // send text message
         if (socketRef && socketRef.current && inputText.trim() !== '') {
             socketRef.current.emit('message', socketRef.current.id, inputText, Date.now());
@@ -33,7 +33,7 @@ export default function ChatInput({ show }: ChatInput) {
         });
 
         setInputFiles([]);
-    };
+    }, [inputFiles, inputText, sendFileMessage, sendMessage, socketRef]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -61,9 +61,20 @@ export default function ChatInput({ show }: ChatInput) {
                     fileSize={file.size}
                     onDelete={() => setInputFiles((prev) => prev.filter((a) => a !== file))}
                 />)}
+
+                <Button
+                    variant="contained"
+                    sx={{
+                        width: '100%',
+                        marginTop: 2,
+                    }}
+                    onClick={() => handleSendMessage()}
+                >
+                    Send message
+                </Button>
             </Stack>
         );
-    }, [inputFiles]);
+    }, [inputFiles, handleSendMessage]);
 
     return (
         <Stack direction={"row"} sx={{
