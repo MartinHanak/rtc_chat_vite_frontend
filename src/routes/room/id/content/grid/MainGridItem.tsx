@@ -29,7 +29,7 @@ export default function MainGridItem({ dragId, width, streamInfo }: MainGridItem
                 transform: CSS.Transform.toString(transform),
                 transition,
             }}>
-            <VideoAudioChat username={streamInfo.username} stream={streamInfo.stream} />
+            <VideoAudioChat username={streamInfo.username} socketId={streamInfo.socketId} stream={streamInfo.stream} />
         </Grid>
     );
 }

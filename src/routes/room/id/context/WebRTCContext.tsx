@@ -12,9 +12,10 @@ interface WebRTCContextValue {
     dataChannelReady: string[],
     fileDataChannels: MutableRefObject<Record<string, RTCDataChannel>> | null,
     fileDataChannelReady: string[],
+    gainNodes: MutableRefObject<Record<string, GainNode>> | null;
 }
 
-const WebRTCContext = createContext<WebRTCContextValue>({ connections: null, streams: null, dataChannels: null, fileDataChannels: null, peerStreamReady: [], dataChannelReady: [], fileDataChannelReady: [] });
+const WebRTCContext = createContext<WebRTCContextValue>({ connections: null, streams: null, dataChannels: null, fileDataChannels: null, peerStreamReady: [], dataChannelReady: [], fileDataChannelReady: [], gainNodes: null });
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useWebRTCContext = () => useContext(WebRTCContext);
@@ -29,6 +30,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
     const peerStreamRef = useRef<Record<string, MediaStream>>({});
     const dataChannelRef = useRef<Record<string, RTCDataChannel>>({});
     const fileDataChannelRef = useRef<Record<string, RTCDataChannel>>({});
+    const gainNodeRef = useRef<Record<string, GainNode>>({});
 
     const [peerStreamReady, setPeerStreamReady] = useState<string[]>([]);
     const [dataChannelReady, setDataChannelReady] = useState<string[]>([]);
@@ -128,23 +130,6 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
             if (!(toSocketId in peerStreamRef.current)) {
                 console.log(`Adding a peer stream`);
 
-                // const videoTrack = event.streams[0].getVideoTracks()[0];
-                // const audioTrack = event.streams[0].getAudioTracks()[0];
-                // const audioContext = new AudioContext();
-                // const gainNode = audioContext.createGain();
-                // // optional contraints
-                // // audioTrack.applyConstraints({ echoCancellation: false });
-                // const audioSourceNode = audioContext.createMediaStreamSource(new MediaStream([audioTrack]));
-                // audioSourceNode.connect(gainNode);
-                // gainNode.connect(audioContext.destination);
-                // gainNode.gain.value = 1.0;
-
-                // const audioDestination = audioContext.createMediaStreamDestination();
-                // gainNode.connect(audioDestination);
-
-                // const modifiedMediaStream = new MediaStream();
-                // modifiedMediaStream.addTrack(videoTrack);
-                // modifiedMediaStream.addTrack(audioDestination.stream.getAudioTracks()[0]);
                 const videoTrack = event.streams[0].getVideoTracks()[0];
                 const audioTrack = event.streams[0].getAudioTracks()[0];
 
@@ -153,7 +138,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
                 const destination = audioContext.createMediaStreamDestination();
 
                 const gainNode = audioContext.createGain();
-                gainNode.gain.value = 100;
+                gainNode.gain.value = 10;
                 source.connect(gainNode);
                 gainNode.connect(destination);
 
@@ -161,7 +146,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
 
                 const modifiedMediaStream = new MediaStream([videoTrack, modifiedAudioTrack]);
 
-
+                gainNodeRef.current[toSocketId] = gainNode;
                 peerStreamRef.current[toSocketId] = modifiedMediaStream;
                 setPeerStreamReady((previous) => [...previous, toSocketId]);
             }
@@ -374,6 +359,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
             streams: peerStreamRef,
             dataChannels: dataChannelRef,
             fileDataChannels: fileDataChannelRef,
+            gainNodes: gainNodeRef,
             peerStreamReady,
             dataChannelReady,
             fileDataChannelReady,
