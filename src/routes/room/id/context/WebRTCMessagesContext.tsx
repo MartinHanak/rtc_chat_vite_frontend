@@ -107,7 +107,8 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
 
         function createFileMessageHandler(con: connection) {
             return (event: MessageEvent) => {
-                const data = event.data as Blob;
+                const dataArrayBuffer = event.data as ArrayBuffer;
+                const data = new Blob([dataArrayBuffer]);
                 console.log(data);
 
                 data.text().then((blobText) => {
@@ -163,7 +164,7 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
         });
     };
 
-    const sendFileMessage = (input: File) => {
+    const sendFileMessage = async (input: File) => {
         console.log('sending');
         console.log(input);
 
@@ -174,8 +175,10 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
         const serializedData = `${input.name}|||${input.type}|||`;
         const dataToSend = new Blob([serializedData, input]);
 
+        const dataToSendArrayBuffer = await dataToSend.arrayBuffer();
+
         connections.forEach((con) => {
-            con.fileDataChannel.send(dataToSend);
+            con.fileDataChannel.send(dataToSendArrayBuffer);
         });
 
     };

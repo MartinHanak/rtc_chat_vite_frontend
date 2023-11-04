@@ -71,9 +71,9 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
         dataChannelRef.current[toSocketId] = dataChannel;
         fileDataChannelRef.current[toSocketId] = fileDataChannel;
 
-        // default is Blob
         dataChannel.binaryType = 'arraybuffer';
-        fileDataChannel.binaryType = 'blob';
+        // Blob is not supported in Chrome, date: 11.4.2023
+        fileDataChannel.binaryType = 'arraybuffer';
 
         // data channel events 
 
@@ -97,6 +97,12 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
             console.log(event);
         });
 
+        dataChannel.addEventListener('error', (event) => {
+            console.error(`Text data channel error: `, event);
+        });
+        fileDataChannel.addEventListener('error', (event) => {
+            console.error(`File data channel error: `, event);
+        });
 
         dataChannel.addEventListener('message', (event) => {
             console.log(`Data channel message received`);
