@@ -32,12 +32,12 @@ class MessageEncoder {
     const buffer = new ArrayBuffer(bufferSize);
 
     const booleanArray = new Int8Array(buffer, 0, 1);
-    const numberArray = new Float32Array(buffer, 1, 1);
+    const numberArray = new DataView(buffer, 1, 4);
     const stringArray = new Uint8Array(buffer, textOffset, textLength);
 
     // fill data
     booleanArray[0] = type;
-    numberArray[0] = size;
+    numberArray.setFloat32(0, size);
     stringArray.set(metadataText);
 
     return buffer;
@@ -48,7 +48,7 @@ class MessageEncoder {
     const order = Math.ceil(data.chunkOrder);
     const total = Math.ceil(data.totalChunks);
     const fileId = this.encodeString(data.fileId);
-    const chunk = new Uint8Array(data.buffer);
+    const chunk = data.buffer;
 
     const textOffset = 1 + 4 * 2;
     const textLength = fileId.byteLength;
@@ -56,16 +56,16 @@ class MessageEncoder {
     const buffer = new ArrayBuffer(bufferSize);
 
     const booleanArray = new Int8Array(buffer, 0, 1);
-    const numberArray = new Float32Array(buffer, 1, 2);
+    const numberArray = new DataView(buffer, 1, 4 * 2);
     const stringArray = new Uint8Array(buffer, textOffset, textLength);
     const chunkArray = new Uint8Array(buffer, textOffset + textLength);
 
     // fill data
     booleanArray[0] = type;
-    numberArray[0] = order;
-    numberArray[1] = total;
+    numberArray.setFloat32(0, order);
+    numberArray.setFloat32(4, total);
     stringArray.set(fileId);
-    chunkArray.set(chunk);
+    chunkArray.set(new Uint8Array(chunk, 0));
 
     return buffer;
   }

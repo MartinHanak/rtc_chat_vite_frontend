@@ -30,10 +30,10 @@ class MessageDecoder {
 
   private decodeFileMetadata(message: ArrayBuffer): FileMessageMetadata {
     const textOffset = 1 + 4;
-    const numberArray = new Float32Array(message, 1, 1);
+    const numberArray = new DataView(message, 1, 4);
     const stringArray = new Uint8Array(message, textOffset);
 
-    const size = numberArray[0];
+    const size = numberArray.getFloat32(0);
     const textData = this.textDecoder.decode(stringArray);
     const fileId = textData.slice(0, FILE_ID_LENGTH);
 
@@ -51,15 +51,14 @@ class MessageDecoder {
 
   private decodeFileChunk(message: ArrayBuffer): FileMessageChunk {
     const textOffset = 1 + 4 * 2;
-    const numberArray = new Float32Array(message, 1, 2);
+    const numberArray = new DataView(message, 1, 4 * 2);
     const stringArray = new Uint8Array(message, textOffset, FILE_ID_LENGTH);
-    const chunkArray = new Uint8Array(message, textOffset + FILE_ID_LENGTH);
 
-    const order = numberArray[0];
-    const total = numberArray[1];
+    const order = numberArray.getFloat32(0);
+    const total = numberArray.getFloat32(4);
     const fileId = this.textDecoder.decode(stringArray);
 
-    const buffer = chunkArray.buffer;
+    const buffer = message.slice(textOffset + FILE_ID_LENGTH);
 
     return {
       fileId,

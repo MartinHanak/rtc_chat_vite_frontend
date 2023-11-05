@@ -9,4 +9,11 @@ export default {
   moduleNameMapper: {
     "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/__ mocks __/fileMock.js",
   },
+  globals: {
+    "ts-jest": {
+      tsConfigFile: "tsconfig.json",
+    },
+    TextEncoder: require("util").TextEncoder,
+    TextDecoder: require("util").TextDecoder,
+  },
 };
