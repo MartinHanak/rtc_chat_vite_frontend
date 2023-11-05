@@ -18,3 +18,7 @@ export const ICE_SERVERS: RTCPeerConnectionConfig = {
     },
   ],
 };
+
+export const FILE_TEXT_DELIMITER = "|||";
+
+export const FILE_ID_LENGTH = 11;
