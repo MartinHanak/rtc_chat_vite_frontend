@@ -4,10 +4,15 @@ import {
   FileMessageMetadata,
   FileMessageType,
 } from "../../types/file";
-import { FILE_TEXT_DELIMITER } from "../config";
+import { FILE_ID_LENGTH, FILE_TEXT_DELIMITER } from "../config";
 
-class MessageEncoder {
+export class MessageEncoder {
   private textEncoder = new TextEncoder();
+
+  get encodedChunkMetadataByteLength() {
+    // 1x int8 + 2x float32 + fileId encoded in UTF-8 with only basic signs
+    return 1 + 4 * 2 + FILE_ID_LENGTH;
+  }
 
   constructor() {}
 

@@ -9,8 +9,13 @@ jest.mock("../../util/config.ts", () => ({
 }));
 
 describe("MessageDecoder", () => {
-  it("should decode metadata for a file message", () => {
-    const message: FileMessage = {
+  let metadataMessage: FileMessage;
+  let chunkMessage: FileMessage;
+  let decodedMetadata: FileMessage;
+  let decodedChunk: FileMessage;
+
+  beforeAll(() => {
+    metadataMessage = {
       type: FileMessageType.METADATA,
       data: {
         size: 1024,
@@ -20,24 +25,7 @@ describe("MessageDecoder", () => {
       },
     };
 
-    const encodedMetadata = MessageEncoder.encodeFileMessage(message);
-
-    const decoded = MessageDecoder.decodeFileMessage(encodedMetadata);
-
-    expect(decoded).toEqual(message);
-
-    if (decoded.type !== FileMessageType.METADATA) {
-      throw Error("wrong type");
-    }
-    expect(decoded.type).toEqual(0);
-    expect(decoded.data.fileId).toEqual("file123abcd");
-    expect(decoded.data.name).toEqual("example.txt");
-    expect(decoded.data.type).toEqual("text/plain");
-    expect(decoded.data.size).toEqual(1024);
-  });
-
-  it("should provide correct length for the decoded buffer", () => {
-    const message: FileMessage = {
+    chunkMessage = {
       type: FileMessageType.CHUNK,
       data: {
         chunkOrder: 1,
@@ -47,72 +35,63 @@ describe("MessageDecoder", () => {
       },
     };
 
-    const encodedChunk = MessageEncoder.encodeFileMessage(message);
+    const encodedMetadata = MessageEncoder.encodeFileMessage(metadataMessage);
+    decodedMetadata = MessageDecoder.decodeFileMessage(encodedMetadata);
 
-    const decoded = MessageDecoder.decodeFileMessage(encodedChunk);
-    if (decoded.type !== FileMessageType.CHUNK) throw new Error("Wrong type");
+    const encodedChunk = MessageEncoder.encodeFileMessage(chunkMessage);
+    decodedChunk = MessageDecoder.decodeFileMessage(encodedChunk);
+  });
 
-    expect(decoded.data.buffer.byteLength).toEqual(
-      message.data.buffer.byteLength
+  it("should decode metadata for a file message", () => {
+    expect(decodedMetadata).toEqual(metadataMessage);
+
+    if (decodedMetadata.type !== FileMessageType.METADATA) {
+      throw Error("wrong type");
+    }
+    expect(decodedMetadata.type).toEqual(0);
+    expect(decodedMetadata.data.fileId).toEqual("file123abcd");
+    expect(decodedMetadata.data.name).toEqual("example.txt");
+    expect(decodedMetadata.data.type).toEqual("text/plain");
+    expect(decodedMetadata.data.size).toEqual(1024);
+  });
+
+  it("should provide correct length for the decoded buffer", () => {
+    if (
+      decodedChunk.type !== FileMessageType.CHUNK ||
+      chunkMessage.type !== FileMessageType.CHUNK
+    )
+      throw new Error("Wrong type");
+
+    expect(decodedChunk.data.buffer.byteLength).toEqual(
+      chunkMessage.data.buffer.byteLength
     );
   });
 
   it("should provide correct decoded fileId", () => {
-    const message: FileMessage = {
-      type: FileMessageType.CHUNK,
-      data: {
-        chunkOrder: 1,
-        totalChunks: 3,
-        fileId: "file123abcd",
-        buffer: new Uint8Array([1, 2, 3, 4]).buffer,
-      },
-    };
+    if (decodedChunk.type !== FileMessageType.CHUNK)
+      throw new Error("Wrong type");
 
-    const encodedChunk = MessageEncoder.encodeFileMessage(message);
-
-    const decoded = MessageDecoder.decodeFileMessage(encodedChunk);
-    if (decoded.type !== FileMessageType.CHUNK) throw new Error("Wrong type");
-
-    expect(decoded.data.fileId).toEqual(message.data.fileId);
+    expect(decodedChunk.data.fileId).toEqual(chunkMessage.data.fileId);
   });
 
   it("should provide correct decoded chunk order and total chunk number", () => {
-    const message: FileMessage = {
-      type: FileMessageType.CHUNK,
-      data: {
-        chunkOrder: 1,
-        totalChunks: 3,
-        fileId: "file123abcd",
-        buffer: new Uint8Array([1, 2, 3, 4]).buffer,
-      },
-    };
+    if (
+      decodedChunk.type !== FileMessageType.CHUNK ||
+      chunkMessage.type !== FileMessageType.CHUNK
+    )
+      throw new Error("Wrong type");
 
-    const encodedChunk = MessageEncoder.encodeFileMessage(message);
-
-    const decoded = MessageDecoder.decodeFileMessage(encodedChunk);
-    if (decoded.type !== FileMessageType.CHUNK) throw new Error("Wrong type");
-
-    expect(decoded.data.chunkOrder).toEqual(message.data.chunkOrder);
-    expect(decoded.data.totalChunks).toEqual(message.data.totalChunks);
+    expect(decodedChunk.data.chunkOrder).toEqual(chunkMessage.data.chunkOrder);
+    expect(decodedChunk.data.totalChunks).toEqual(
+      chunkMessage.data.totalChunks
+    );
   });
 
   it("should hold correct values in the decoded buffer", () => {
-    const message: FileMessage = {
-      type: FileMessageType.CHUNK,
-      data: {
-        chunkOrder: 1,
-        totalChunks: 3,
-        fileId: "file123abcd",
-        buffer: new Uint8Array([1, 2, 3, 4]).buffer,
-      },
-    };
+    if (decodedChunk.type !== FileMessageType.CHUNK)
+      throw new Error("Wrong type");
 
-    const encodedChunk = MessageEncoder.encodeFileMessage(message);
-
-    const decoded = MessageDecoder.decodeFileMessage(encodedChunk);
-    if (decoded.type !== FileMessageType.CHUNK) throw new Error("Wrong type");
-
-    const intArray = new Uint8Array(decoded.data.buffer);
+    const intArray = new Uint8Array(decodedChunk.data.buffer);
     expect(intArray.length).toEqual(4);
     expect(intArray[0]).toEqual(1);
     expect(intArray[1]).toEqual(2);
@@ -121,21 +100,7 @@ describe("MessageDecoder", () => {
   });
 
   it("should decode file chunk for a file message", () => {
-    const message: FileMessage = {
-      type: FileMessageType.CHUNK,
-      data: {
-        chunkOrder: 1,
-        totalChunks: 3,
-        fileId: "file123abcd",
-        buffer: new Uint8Array([1, 2, 3, 4]).buffer,
-      },
-    };
-
-    const encodedChunk = MessageEncoder.encodeFileMessage(message);
-
-    const decoded = MessageDecoder.decodeFileMessage(encodedChunk);
-
-    expect(decoded).toEqual(message);
-    expect(decoded.data).toEqual(message.data);
+    expect(decodedChunk).toEqual(chunkMessage);
+    expect(decodedChunk.data).toEqual(chunkMessage.data);
   });
 });
