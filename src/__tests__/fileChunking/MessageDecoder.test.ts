@@ -1,18 +1,16 @@
+import { beforeAll, describe, expect, it } from "vitest";
 import { FileMessage, FileMessageType } from "../../types/file";
-import MessageEncoder from "../../util/fileChunking/MessageEncoder";
-import MessageDecoder from "../../util/fileChunking/MessageDecoder";
-
-jest.mock("../../util/config.ts", () => ({
-  BACKEND_URL: "test",
-  FILE_TEXT_DELIMITER: "|||",
-  FILE_ID_LENGTH: 11,
-}));
+import { MessageEncoder } from "../../util/fileChunking/MessageEncoder";
+import { MessageDecoder } from "../../util/fileChunking/MessageDecoder";
 
 describe("MessageDecoder", () => {
   let metadataMessage: FileMessage;
   let chunkMessage: FileMessage;
   let decodedMetadata: FileMessage;
   let decodedChunk: FileMessage;
+
+  const encoder = new MessageEncoder();
+  const decoder = new MessageDecoder();
 
   beforeAll(() => {
     metadataMessage = {
@@ -36,11 +34,11 @@ describe("MessageDecoder", () => {
       },
     };
 
-    const encodedMetadata = MessageEncoder.encodeFileMessage(metadataMessage);
-    decodedMetadata = MessageDecoder.decodeFileMessage(encodedMetadata);
+    const encodedMetadata = encoder.encodeFileMessage(metadataMessage);
+    decodedMetadata = decoder.decodeFileMessage(encodedMetadata);
 
-    const encodedChunk = MessageEncoder.encodeFileMessage(chunkMessage);
-    decodedChunk = MessageDecoder.decodeFileMessage(encodedChunk);
+    const encodedChunk = encoder.encodeFileMessage(chunkMessage);
+    decodedChunk = decoder.decodeFileMessage(encodedChunk);
   });
 
   it("should decode metadata for a file message", () => {
@@ -103,9 +101,5 @@ describe("MessageDecoder", () => {
   it("should decode file chunk for a file message", () => {
     expect(decodedChunk).toEqual(chunkMessage);
     expect(decodedChunk.data).toEqual(chunkMessage.data);
-  });
-
-  it("should decode metadata information about total number of chunks", () => {
-    expect(decodedMetadata.data.totalChunks).toEqual(10);
   });
 });

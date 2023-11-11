@@ -88,7 +88,3 @@ export class MessageEncoder {
     return this.textEncoder.encode(input);
   }
 }
-
-const encoder = new MessageEncoder();
-
-export default encoder;

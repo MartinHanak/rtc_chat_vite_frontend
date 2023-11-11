@@ -70,7 +70,3 @@ export class MessageDecoder {
     };
   }
 }
-
-const decoder = new MessageDecoder();
-
-export default decoder;
