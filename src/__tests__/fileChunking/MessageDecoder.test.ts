@@ -19,6 +19,7 @@ describe("MessageDecoder", () => {
       type: FileMessageType.METADATA,
       data: {
         size: 1024,
+        totalChunks: 10,
         fileId: "file123abcd", // must be 11 char long
         name: "example.txt",
         type: "text/plain",
@@ -102,5 +103,9 @@ describe("MessageDecoder", () => {
   it("should decode file chunk for a file message", () => {
     expect(decodedChunk).toEqual(chunkMessage);
     expect(decodedChunk.data).toEqual(chunkMessage.data);
+  });
+
+  it("should decode metadata information about total number of chunks", () => {
+    expect(decodedMetadata.data.totalChunks).toEqual(10);
   });
 });

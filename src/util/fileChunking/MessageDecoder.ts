@@ -6,7 +6,7 @@ import {
 } from "../../types/file";
 import { FILE_ID_LENGTH, FILE_TEXT_DELIMITER } from "../config";
 
-class MessageDecoder {
+export class MessageDecoder {
   private textDecoder = new TextDecoder();
 
   constructor() {}
@@ -29,11 +29,12 @@ class MessageDecoder {
   }
 
   private decodeFileMetadata(message: ArrayBuffer): FileMessageMetadata {
-    const textOffset = 1 + 4;
-    const numberArray = new DataView(message, 1, 4);
+    const textOffset = 1 + 4 * 2;
+    const numberArray = new DataView(message, 1, 4 * 2);
     const stringArray = new Uint8Array(message, textOffset);
 
     const size = numberArray.getFloat32(0);
+    const totalChunks = numberArray.getFloat32(4);
     const textData = this.textDecoder.decode(stringArray);
     const fileId = textData.slice(0, FILE_ID_LENGTH);
 
@@ -44,6 +45,7 @@ class MessageDecoder {
     return {
       fileId,
       size,
+      totalChunks,
       name,
       type,
     };

@@ -9,9 +9,15 @@ import { FILE_ID_LENGTH, FILE_TEXT_DELIMITER } from "../config";
 export class MessageEncoder {
   private textEncoder = new TextEncoder();
 
+  private maxChunk = 16384;
+
   get encodedChunkMetadataByteLength() {
     // 1x int8 + 2x float32 + fileId encoded in UTF-8 with only basic signs
     return 1 + 4 * 2 + FILE_ID_LENGTH;
+  }
+
+  get chunkBufferByteSize() {
+    return this.maxChunk - this.encodedChunkMetadataByteLength;
   }
 
   constructor() {}
@@ -27,22 +33,24 @@ export class MessageEncoder {
   private encodeMetadata(data: FileMessageMetadata) {
     const type = FileMessageType.METADATA;
     const size = data.size;
+    const total = data.totalChunks;
     const metadataText = this.encodeString(
       data.fileId + data.name + FILE_TEXT_DELIMITER + data.type
     );
 
-    const textOffset = 1 + 4;
+    const textOffset = 1 + 4 * 2;
     const textLength = metadataText.byteLength;
     const bufferSize = textOffset + textLength;
     const buffer = new ArrayBuffer(bufferSize);
 
     const booleanArray = new Int8Array(buffer, 0, 1);
-    const numberArray = new DataView(buffer, 1, 4);
+    const numberArray = new DataView(buffer, 1, 4 * 2);
     const stringArray = new Uint8Array(buffer, textOffset, textLength);
 
     // fill data
     booleanArray[0] = type;
     numberArray.setFloat32(0, size);
+    numberArray.setFloat32(4, total);
     stringArray.set(metadataText);
 
     return buffer;

@@ -13,6 +13,7 @@ describe("MessageEncoder", () => {
       type: FileMessageType.METADATA,
       data: {
         size: 1024,
+        totalChunks: 10,
         fileId: "file123abcd",
         name: "example.txt",
         type: "text/plain",
@@ -79,5 +80,26 @@ describe("MessageEncoder", () => {
     expect(intArray[1]).toEqual(2);
     expect(intArray[2]).toEqual(3);
     expect(intArray[3]).toEqual(4);
+  });
+
+  it("should encode metadata about total number of chunks", () => {
+    const message: FileMessage = {
+      type: FileMessageType.METADATA,
+      data: {
+        size: 1024,
+        totalChunks: 10,
+        fileId: "file123abcd",
+        name: "example.txt",
+        type: "text/plain",
+      },
+    };
+
+    const encodedMetadata = MessageEncoder.encodeFileMessage(message);
+
+    const view = new DataView(encodedMetadata);
+
+    const total = view.getFloat32(1 + 4);
+
+    expect(total).toEqual(10);
   });
 });
