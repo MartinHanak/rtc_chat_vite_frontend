@@ -16,6 +16,7 @@ export type FileMessage =
 export type FileMessageMetadata = {
   fileId: string;
   size: number;
+  totalChunks: number;
   name: string;
   type: string;
 };
