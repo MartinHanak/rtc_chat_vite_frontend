@@ -1,8 +1,9 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useSocketContext } from "./SocketContext";
 import { useWebRTCContext } from "./WebRTCContext";
 import { userInfo } from "../../../../types/user";
 import { textMessage, fileMessage } from "../../../../types/message";
+import FileSender from "../../../../util/fileChunking/FileSender";
 
 
 interface WebRTCMessagesContextValue {
@@ -33,6 +34,7 @@ type connection = {
 
 export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContextProvider) {
 
+    const fileSender = useRef<FileSender>(new FileSender());
     const [connections, setConnections] = useState<Map<string, connection>>(new Map());
 
     const [messages, setMessages] = useState<textMessage[]>([]);
@@ -94,6 +96,18 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
         });
 
     }, [users, dataChannels, dataChannelReady, fileDataChannelReady, fileDataChannels]);
+
+    // file sender dc update
+    useEffect(() => {
+        const fileDCs: RTCDataChannel[] = [];
+
+        connections.forEach((con) => {
+            fileDCs.push(con.fileDataChannel);
+        });
+
+        fileSender.current.updateDataChannels(fileDCs);
+
+    }, [connections, fileSender]);
 
     useEffect(() => {
         function createTextMessageHandler(con: connection) {
@@ -165,22 +179,12 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
     };
 
     const sendFileMessage = async (input: File) => {
-        console.log('sending');
+        console.log('sending file');
         console.log(input);
 
         insertFileMessage(input, input.name, input.type, Date.now(), localUserInfo);
 
-        // File is converted to Blob in the datachannel
-        // info is lost
-        const serializedData = `${input.name}|||${input.type}|||`;
-        const dataToSend = new Blob([serializedData, input]);
-
-        const dataToSendArrayBuffer = await dataToSend.arrayBuffer();
-
-        connections.forEach((con) => {
-            con.fileDataChannel.send(dataToSendArrayBuffer);
-        });
-
+        fileSender.current.sendFiles([input]);
     };
 
     function insertTextMessage(message: string, time: number, userInfo: userInfo) {
