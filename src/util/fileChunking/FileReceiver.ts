@@ -61,6 +61,9 @@ export default class FileReceiver {
           break;
 
         case FileMessageType.CHUNK:
+          console.log(
+            `Received chunk ${decodedFileMessage.data.chunkOrder} out of ${decodedFileMessage.data.totalChunks}`
+          );
           fileProgress.chunks[decodedFileMessage.data.chunkOrder] =
             decodedFileMessage.data.buffer;
           fileProgress.chunksReceived += 1;
@@ -89,8 +92,33 @@ export default class FileReceiver {
   }
 
   private finishFileDownload(fileId: string) {
-    // TODO: combine chunks into a file
-    const file = new File([], "test");
+    const fileProgress = this.fileChunks.get(fileId);
+
+    if (!fileProgress) {
+      throw new Error(`No file progress for the file ID: ${fileId}`);
+    }
+
+    if (!fileProgress.metaData) {
+      throw new Error(`No metadata for the file ID: ${fileId}`);
+    }
+
+    const combinedArray = new Uint8Array(fileProgress.metaData.size);
+
+    let offset = 0;
+
+    fileProgress.chunks.forEach((chunk) => {
+      combinedArray.set(new Uint8Array(chunk), offset);
+      offset += chunk.byteLength;
+    });
+
+    const combinedBlob = new Blob([combinedArray], {
+      type: fileProgress.metaData.type,
+    });
+
+    const file = new File([combinedBlob], fileProgress.metaData.name, {
+      type: fileProgress.metaData.type,
+    });
+
     console.log("DOWNLOAD COMPLETE");
     console.log(fileId);
 

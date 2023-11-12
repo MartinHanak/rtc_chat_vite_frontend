@@ -129,6 +129,7 @@ export default class FileSender {
       let chunkIndex = 0;
 
       async function sendNextChunk() {
+        console.log(`Sending chunk ${chunkIndex + 1} out of ${totalChunks}`);
         const nextChunk = await file
           .slice(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize)
           .arrayBuffer();
