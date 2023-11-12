@@ -22,7 +22,6 @@ export default class FileReceiver {
     this.decoder = new MessageDecoder();
     this.fileHandler = fileHandler;
     this.fileChunks = new Map();
-    this.start();
   }
 
   public start() {

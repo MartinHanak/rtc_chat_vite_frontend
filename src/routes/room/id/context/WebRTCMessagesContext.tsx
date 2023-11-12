@@ -4,6 +4,7 @@ import { useWebRTCContext } from "./WebRTCContext";
 import { userInfo } from "../../../../types/user";
 import { textMessage, fileMessage } from "../../../../types/message";
 import FileSender from "../../../../util/fileChunking/FileSender";
+import FileReceiver from "../../../../util/fileChunking/FileReceiver";
 
 
 interface WebRTCMessagesContextValue {
@@ -29,12 +30,11 @@ type connection = {
     dataChannel: RTCDataChannel,
     fileDataChannel: RTCDataChannel;
     textMessageHandler?: (e: MessageEvent) => void;
-    fileMessageHandler?: (e: MessageEvent) => void;
+    fileMessageReceiver?: FileReceiver;
 };
 
 export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContextProvider) {
 
-    const fileSender = useRef<FileSender>(new FileSender());
     const [connections, setConnections] = useState<Map<string, connection>>(new Map());
 
     const [messages, setMessages] = useState<textMessage[]>([]);
@@ -42,6 +42,8 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
 
     const { users, socketRef } = useSocketContext();
     const { dataChannels, dataChannelReady, fileDataChannelReady, fileDataChannels } = useWebRTCContext();
+    const fileSender = useRef<FileSender>(new FileSender());
+
 
     const localUserInfo = useMemo(() => {
         const id = socketRef?.current?.id ?? '';
@@ -119,42 +121,15 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
             };
         }
 
-        function createFileMessageHandler(con: connection) {
-            return (event: MessageEvent) => {
-                const dataArrayBuffer = event.data as ArrayBuffer;
-                const data = new Blob([dataArrayBuffer]);
-                console.log(data);
-
-                data.text().then((blobText) => {
-                    const delimiter = "|||";
-                    const blobParts = blobText.split(delimiter);
-                    if (blobParts.length < 3) {
-                        console.error('Could not parse incoming Blob data');
-                    }
-                    const fileName = blobParts[0];
-                    const type = blobParts[1];
-
-                    const blobData = data.slice(fileName.length + type.length + 2 * delimiter.length);
-
-                    const file = new File([blobData], fileName, { type: type });
-                    console.log(file);
-
-                    insertFileMessage(file, fileName, type, Date.now(), con.userInfo);
-
-                }).catch((err) => console.log(err));
-
-
-            };
-        }
 
         connections.forEach((con) => {
             const textHandler = createTextMessageHandler(con);
             con.textMessageHandler = textHandler;
             con.dataChannel.addEventListener('message', textHandler);
 
-            const fileHandler = createFileMessageHandler(con);
-            con.fileMessageHandler = fileHandler;
-            con.fileDataChannel.addEventListener('message', fileHandler);
+            const fileHandler = (file: File) => insertFileMessage(file, file.name, file.type, Date.now(), con.userInfo);
+            con.fileMessageReceiver = new FileReceiver(con.fileDataChannel, fileHandler);
+            con.fileMessageReceiver.start();
         });
 
         // connections cleanup
@@ -162,8 +137,8 @@ export function WebRTCMessagesContextProvider({ children }: WebRTCMessagesContex
             connections.forEach((con) => {
                 if (con.textMessageHandler)
                     con.dataChannel.removeEventListener('message', con.textMessageHandler);
-                if (con.fileMessageHandler)
-                    con.fileDataChannel.removeEventListener('message', con.fileMessageHandler);
+                if (con.fileMessageReceiver)
+                    con.fileMessageReceiver.stop();
             });
         };
 
