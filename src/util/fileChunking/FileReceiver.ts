@@ -22,9 +22,11 @@ export default class FileReceiver {
     this.decoder = new MessageDecoder();
     this.fileHandler = fileHandler;
     this.fileChunks = new Map();
+    this.start();
   }
 
   public start() {
+    this.stop();
     const handler = this.createMessageHandler();
     this.dc.addEventListener("message", handler);
   }
@@ -40,18 +42,37 @@ export default class FileReceiver {
       const buffer = event.data;
       const decodedFileMessage = this.decoder.decodeFileMessage(buffer);
 
-      const fileProgress = this.fileChunks.get(decodedFileMessage.data.fileId);
+      let fileProgress = this.fileChunks.get(decodedFileMessage.data.fileId);
 
-      if(!fileProgress) {
-        this.initializeFileDownload(decodedFileMessage.data.fileId, decodedFileMessage.data.)
+      if (!fileProgress) {
+        this.initializeFileDownload(
+          decodedFileMessage.data.fileId,
+          decodedFileMessage.data.totalChunks
+        );
+        fileProgress = this.fileChunks.get(decodedFileMessage.data.fileId);
+      }
+
+      if (!fileProgress) {
+        throw new Error(`Could not initialize file download`);
       }
 
       switch (decodedFileMessage.type) {
         case FileMessageType.METADATA:
+          fileProgress.metaData = decodedFileMessage.data;
           break;
 
         case FileMessageType.CHUNK:
+          fileProgress.chunks[decodedFileMessage.data.chunkOrder] =
+            decodedFileMessage.data.buffer;
+          fileProgress.chunksReceived += 1;
           break;
+      }
+
+      if (
+        fileProgress.chunksReceived === fileProgress.chunksTotal &&
+        fileProgress.metaData
+      ) {
+        this.finishFileDownload(decodedFileMessage.data.fileId);
       }
     };
 
@@ -71,6 +92,8 @@ export default class FileReceiver {
   private finishFileDownload(fileId: string) {
     // TODO: combine chunks into a file
     const file = new File([], "test");
+    console.log("DOWNLOAD COMPLETE");
+    console.log(fileId);
 
     this.fileChunks.delete(fileId);
 
