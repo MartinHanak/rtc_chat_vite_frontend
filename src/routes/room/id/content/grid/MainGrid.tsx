@@ -2,8 +2,9 @@ import { Grid } from "@mui/material";
 import { combinedUserState } from "../../../../../types/user";
 import MainGridItem from "./MainGridItem";
 import MainGridSortableContext from "./MainGridSortableContext";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import EmptyMainGridItem from "./EmptyMainGridItem";
 
 interface MainGrid {
     rows: number;
@@ -15,7 +16,6 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
 
     const gridItemWidth = Math.max(1, Math.floor(12 / columns));
 
-    const previousItemsOrderRef = useRef<UniqueIdentifier[]>([]);
     const [items, setItems] = useState<UniqueIdentifier[]>([]);
     const [itemStreamMap, setItemStreamMap] = useState<Map<UniqueIdentifier, combinedUserState>>(new Map());
 
@@ -23,33 +23,24 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
         const newItems: UniqueIdentifier[] = [];
         const newItemStreamMap = new Map<UniqueIdentifier, combinedUserState>();
 
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < columns; col++) {
+                newItems.push(`mainGrid_${col}x${row}`);
+            }
+        }
+
+        let index = 0;
         streams.forEach((streamInfo) => {
-            const newItem = `mainGrid_${columns}x${rows}_${streamInfo.socketId}`;
-            newItems.push(newItem);
-            newItemStreamMap.set(newItem, streamInfo);
+            const row = Math.floor(index / columns);
+            const col = Math.floor(index % columns);
+            newItemStreamMap.set(`mainGrid_${col}x${row}`, streamInfo);
+            index += 1;
         });
 
 
         setItemStreamMap(newItemStreamMap);
 
-        // remember previous order of items when streams change
-        const updatedItems: UniqueIdentifier[] = [];
-
-        previousItemsOrderRef.current.forEach((item) => {
-            if (newItemStreamMap.has(item)) {
-                updatedItems.push(item);
-            }
-        });
-        // add new ones
-        for (const addedItem of newItemStreamMap.keys()) {
-            if (!updatedItems.includes(addedItem)) {
-                updatedItems.push(addedItem);
-            }
-        }
-
-        // update previous order
-        previousItemsOrderRef.current = updatedItems;
-        setItems(updatedItems);
+        setItems(newItems);
 
     }, [streams, rows, columns]);
 
@@ -64,18 +55,18 @@ export default function MainGrid({ rows, columns, streams }: MainGrid) {
                 {items.map((item) => {
                     const streamInfo = itemStreamMap.get(item);
 
-                    if (!streamInfo) {
-                        return;
+                    if (!streamInfo || streamInfo.displayState !== 'main') {
+                        return (<EmptyMainGridItem
+                            dragId={item as string}
+                            key={item}
+                            width={gridItemWidth}
+                        />);
                     }
 
-                    if (streamInfo.displayState !== 'main') {
-                        return null;
-                    }
-                    // key forces rerender when columns or rows change
                     return (
                         < MainGridItem
-                            dragId={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
-                            key={`mainGrid_${columns}x${rows}_${streamInfo.socketId}`}
+                            dragId={item as string}
+                            key={item}
                             width={gridItemWidth}
                             streamInfo={streamInfo}
                         />

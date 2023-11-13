@@ -16,6 +16,6 @@ export function Video({ stream }: Video) {
     }, [stream]);
 
     return (
-        <Box component='video' controls ref={localRef} autoPlay width='100%' height='100%' ></Box>
+        <Box component='video' ref={localRef} autoPlay width='100%' height='100%' ></Box>
     );
 }
