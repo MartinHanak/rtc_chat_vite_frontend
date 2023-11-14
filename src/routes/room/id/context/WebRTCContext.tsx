@@ -171,7 +171,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
 
             const connection = createPeerConnection(toSocketId);
 
-            if (localStreamRef && localStreamRef.current) {
+            if ((audio || video) && localStreamRef && localStreamRef.current) {
 
                 if (audio) {
                     connection.addTrack(
@@ -186,6 +186,8 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
                         localStreamRef.current
                     );
                 }
+            } else if (!video && !audio) {
+                console.log('Creating offer for text based room');
             } else {
                 console.log(`Local stream not ready while initiating WebRTC call.`);
                 return;
@@ -242,7 +244,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
         const handleOffer = (fromSocketId: string, offer: RTCSessionDescriptionInit) => {
             const connection = createPeerConnection(fromSocketId);
 
-            if (localStreamRef && localStreamRef.current) {
+            if ((audio || video) && localStreamRef && localStreamRef.current) {
 
                 if (audio) {
                     connection.addTrack(
@@ -257,6 +259,8 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
                         localStreamRef.current
                     );
                 }
+            } else if (!audio && !video) {
+                console.log('Creating answer for text based room.');
             } else {
                 console.log(`Local stream not ready while initiating WebRTC call.`);
                 return;
