@@ -21,7 +21,7 @@ export default function ChatOverlay({ offset, overlay }: ChatOverlay) {
                 right: theme => overlay ? theme.spacing(2) : '50%',
                 transform: overlay ? 'none' : 'translateX(50%)',
                 bottom: `calc(${offset}px + 16px )`,
-                height: `calc(100% - ${offset}px - 32px)`,
+                height: overlay ? `calc(100% - ${offset}px - 32px)` : `calc(100% - 80px - 32px)`,
                 maxWidth: overlay ? '480px' : '720px',
                 width: {
                     xs: '100%',
