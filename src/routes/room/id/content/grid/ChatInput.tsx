@@ -8,9 +8,10 @@ import FileChip from "./FileChip";
 
 interface ChatInput {
     show: boolean;
+    overlay: boolean;
 }
 
-export default function ChatInput({ show }: ChatInput) {
+export default function ChatInput({ show, overlay }: ChatInput) {
 
     const [inputText, setInputText] = useState<string>('');
     const [inputFiles, setInputFiles] = useState<File[]>([]);
@@ -22,12 +23,11 @@ export default function ChatInput({ show }: ChatInput) {
     const handleSendMessage = useCallback(() => {
         // send text message
         if (socketRef && socketRef.current && inputText.trim() !== '') {
-            socketRef.current.emit('message', socketRef.current.id, inputText, Date.now());
             sendMessage(inputText);
             setInputText('');
         }
 
-        // TODO:  send file message
+        //  send file message
         inputFiles.forEach((file) => {
             sendFileMessage(file);
         });
@@ -81,7 +81,7 @@ export default function ChatInput({ show }: ChatInput) {
             position: 'relative',
             pointerEvents: show ? 'auto' : 'none',
             opacity: show ? '1' : '0',
-            marginRight: '34px',
+            marginRight: overlay ? '34px' : 0,
             marginBottom: '14px', // 34 - 40/2 where 40 = height of 1 line textarea
             height: '40px',
             transition: theme => theme.transitions.create(['opacity'], {
@@ -99,7 +99,7 @@ export default function ChatInput({ show }: ChatInput) {
                 onKeyDown={handleKeyDown}
                 sx={{
                     position: 'absolute', bottom: 0, left: 0,
-                    width: 'calc(100% - 80px)',
+                    width: overlay ? 'calc(100% - 80px)' : 'calc(100% - 88px)',
                     backgroundColor: theme => theme.palette.background.default,
                     maxHeight: '80vh',
                     '& .MuiInputBase-root': {
@@ -127,17 +127,19 @@ export default function ChatInput({ show }: ChatInput) {
             />
 
 
-            <Button component="div" variant="contained" endIcon={<NoteAddIcon />}
+            <Button component="div" variant="contained"
                 sx={{
                     position: 'absolute', right: '0', bottom: '0',
                     height: '100%',
-                    borderRadius: 0,
-                    paddingLeft: '8px',
-                    paddingRight: 'calc(32px + 16px)',
+                    borderRadius: overlay ? 0 : '0 4px 4px 0',
+                    paddingLeft: overlay ? '8px' : '32px',
+                    paddingRight: overlay ? 'calc(32px + 16px)' : '32px',
                     paddingY: 0
                 }}
             >
-                <Box sx={{ position: 'relative', width: 1, height: 1, margin: 0, padding: 0, backgroundColor: 'yellow' }} >
+                <NoteAddIcon />
+
+                <Box sx={{ position: 'absolute', width: 1, height: 1, margin: 0, padding: 0 }} >
                     <input
                         multiple
                         type="file"
@@ -145,7 +147,7 @@ export default function ChatInput({ show }: ChatInput) {
                         style={{
                             opacity: 0,
                             cursor: 'pointer',
-                            width: '40px',
+                            width: '100%',
                             height: '40px',
                             backgroundColor: 'red', position: 'absolute', lineHeight: '100%', display: 'block'
                         }} />

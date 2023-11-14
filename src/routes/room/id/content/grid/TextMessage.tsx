@@ -7,9 +7,10 @@ interface TextMessage {
     message: string;
     show: boolean;
     delay: number;
+    overlay: boolean;
 }
 
-export default function TextMessage({ username, userColor, message, show, delay }: TextMessage) {
+export default function TextMessage({ username, userColor, message, show, delay, overlay }: TextMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -54,7 +55,7 @@ export default function TextMessage({ username, userColor, message, show, delay 
             '&:first-of-type': {
                 marginTop: 'auto !important'
             },
-            alignSelf: 'end',
+            alignSelf: overlay ? 'end' : 'start',
             paddingY: 1,
             paddingX: 2,
             borderRadius: '5px'

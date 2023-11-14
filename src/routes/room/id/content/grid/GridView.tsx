@@ -31,7 +31,7 @@ export default function GridView() {
 
                 <SideGrid streams={streams} offset={show ? height : 0} />
 
-                <ChatOverlay offset={show ? height : 0} />
+                <ChatOverlay offset={show ? height : 0} overlay={true} />
 
                 <GridDisplayControls streams={streams} setHeight={setHeight} height={height} toggle={toggle} show={show} changeUserDisplayState={changeUserDisplayState} />
             </Box>

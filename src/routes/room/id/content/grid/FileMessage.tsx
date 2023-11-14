@@ -11,10 +11,11 @@ interface FileMessage {
     type: string;
     show: boolean;
     delay: number;
+    overlay: boolean;
 }
 
 
-export default function FileMessage({ username, userColor, file, fileName, type, show, delay }: FileMessage) {
+export default function FileMessage({ username, userColor, file, fileName, type, show, delay, overlay }: FileMessage) {
 
     const [localTempShowMessage, setLocalTempShowMessage] = useState(true);
 
@@ -66,7 +67,7 @@ export default function FileMessage({ username, userColor, file, fileName, type,
             '&:first-of-type': {
                 marginTop: 'auto !important'
             },
-            alignSelf: 'end',
+            alignSelf: overlay ? 'end' : 'start',
             paddingY: 1,
             paddingX: 2,
             borderRadius: '5px'

@@ -8,9 +8,10 @@ import FileMessage from "./FileMessage";
 
 interface Messages {
     show: boolean;
+    overlay: boolean;
 }
 
-export default function Messages({ show }: Messages) {
+export default function Messages({ show, overlay }: Messages) {
 
     const { messages, fileMessages } = useWebRTCMessagesContext();
 
@@ -93,6 +94,7 @@ export default function Messages({ show }: Messages) {
                             userColor={message.userInfo.color}
                             message={message.message}
                             show={show}
+                            overlay={overlay}
                             delay={200 * (combinedMessages.length - 1 - index)}
                         />
                     );
@@ -106,6 +108,7 @@ export default function Messages({ show }: Messages) {
                             fileName={message.fileName}
                             type={message.type}
                             show={show}
+                            overlay={overlay}
                             delay={200 * (combinedMessages.length - 1 - index)}
                         />
                     );
