@@ -1,6 +1,5 @@
-import { Card, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
+import { Card, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from "@mui/material";
 import { combinedUserState, displayState } from "../../../../../types/user";
-import { grey } from '@mui/material/colors';
 
 import ViewSidebarRoundedIcon from '@mui/icons-material/ViewSidebarRounded';
 import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';
@@ -44,12 +43,14 @@ export default function StreamDisplayControl({ active, user, displaySwitch }: St
 
     return (
         <Card sx={{
-            height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+            height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center',
+            paddingX: 4,
             // border: '5px solid black',
             pointerEvents: active ? 'auto' : 'none',
-            backgroundColor: active ? '' : grey[400]
+            backgroundColor: active ? '' : 'rgba(0,0,0,0.4)'
         }} >
-            {user.username}
+            <Typography variant="h6" sx={{ marginTop: 2, marginBottom: 3, textOverflow: 'ellipsis', maxWidth: '300px', breakWord: 'keep-all', wordBreak: 'keep-all', whiteSpace: 'nowrap', overflow: 'hidden' }}> {user.username}</Typography>
+
 
             <ToggleButtonGroup
                 value={user.displayState}

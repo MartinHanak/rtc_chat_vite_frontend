@@ -76,9 +76,10 @@ export default function GridDisplayControls({ streams, setHeight, height, toggle
                 left: 0,
                 width: '100%',
                 height: '20% ',
-                minHeight: '200px',
+                minHeight: '240px',
                 //minHeight: '200px',
-                //backgroundColor: 'red',
+                background: theme => `linear-gradient(0deg, ${theme.palette.background.secondaryDefault} 0%, ${theme.palette.background.default} 92%)`,
+                backgroundRepeat: 'no-repeat',
                 display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column',
                 pointerEvents: 'none'
             }}>
@@ -126,8 +127,6 @@ export default function GridDisplayControls({ streams, setHeight, height, toggle
                             transform: 'translateX(50%)'
                         }}>
                             {streamArray.map((stream) => {
-                                //console.log(`active stream is ${activeStream}`);
-
                                 const active = stream.socketId === activeStream;
                                 const activeIndex = streamArray.findIndex(stream => stream.socketId === activeStream);
                                 let transformValue = `translateX(${(-activeIndex - 0.5) * 100}%)`;
