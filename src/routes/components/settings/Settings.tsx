@@ -2,6 +2,7 @@ import { Box, Divider } from "@mui/material";
 import SettingsHeader from "./SettingsHeader";
 import UserColorSettings from "./UserColorSettings";
 import UsernameSettings from "./UsernameSettings";
+import DisplayRandomSettings from "./DisplayRandomSettings";
 
 interface Settings {
     closeModal: () => void;
@@ -20,6 +21,8 @@ export default function Settings({ closeModal }: Settings) {
                 <UsernameSettings />
 
                 <UserColorSettings />
+
+                <DisplayRandomSettings />
             </Box>
         </>
     );

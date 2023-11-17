@@ -17,6 +17,7 @@ export default function ChatOverlay({ offset, overlay }: ChatOverlay) {
         <Box
             sx={{
                 position: 'fixed',
+                zIndex: 10,
                 display: 'block',
                 right: theme => overlay ? theme.spacing(2) : '50%',
                 transform: overlay ? 'none' : 'translateX(50%)',

@@ -2,18 +2,19 @@ import { Breadcrumbs, Stack, Link, Container, Box } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { LocalSettingsModal } from "./LocalSettingsModal";
+import RandomRoom from "../room/id/content/RandomRoom";
+import { useLocalSettingsContext } from "./LocalSettingsContext";
 
 export default function Header() {
     const location = useLocation();
     const pathnames = ["", ...location.pathname.split('/').filter((x) => x)];
 
-
-
+    const { displayRandomRoom } = useLocalSettingsContext();
 
     return (
         <Box sx={{ width: 1, position: 'absolute', top: 0, left: 0 }}>
             <Container sx={{}}>
-                <Stack component="header" direction="row" justifyContent="space-between" alignItems="center">
+                <Stack sx={{ position: 'relative' }} component="header" direction="row" justifyContent="space-between" alignItems="center">
 
                     <Breadcrumbs aria-label="breadcrumb">
                         {pathnames.map((name, index) => {
@@ -45,6 +46,10 @@ export default function Header() {
 
                     <LocalSettingsModal />
 
+
+                    {displayRandomRoom !== 'false' &&
+                        <RandomRoom />
+                    }
                 </Stack>
             </Container>
         </Box>
