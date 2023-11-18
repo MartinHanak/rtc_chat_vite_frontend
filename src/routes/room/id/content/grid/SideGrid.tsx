@@ -27,7 +27,7 @@ export default function SideGrid({ streams, offset }: SideGrid) {
                 }
 
                 return (
-                    <VideoAudioChat key={streamInfo.socketId} username={streamInfo.username} stream={streamInfo.stream} />
+                    <VideoAudioChat key={streamInfo.socketId} socketId={streamInfo.socketId} username={streamInfo.username} stream={streamInfo.stream} />
                 );
             })}
         </Stack>

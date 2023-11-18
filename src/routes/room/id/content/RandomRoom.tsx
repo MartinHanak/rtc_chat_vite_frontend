@@ -61,6 +61,15 @@ export default function RandomRoom() {
 
     const createRandomRoom = async () => {
         setStatus('loading');
+        navigate(`/loading`);
+
+        // TODO: fixes issues of connecting and disconnecting immediately
+        // if not redirected
+
+        // other solution:
+        //  redirect to
+        //         navigate(`/room/${encodeURIComponent(name)}`);
+        // problem: displays "room does not exist" until BE creates the room
 
 
         const name: string = nanoid();

@@ -14,6 +14,7 @@ import ErrorPage from './routes/error/ErrorPage';
 import HomePageRoute from './routes/homepage/HomePageRoute';
 import NewRoomRoute from './routes/room/NewRoomRoute';
 import RoomRoute from './routes/room/id/RoomRoute';
+import LoadingRoute from './routes/loading/LoadingRoute';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/room/:id",
         element: <RoomRoute />
+      },
+      {
+        path: "/loading",
+        element: <LoadingRoute />
       }
     ]
   }

@@ -30,6 +30,13 @@ export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
             return;
         }
 
+        if (!(stream instanceof MediaStream)) {
+            console.error('STREAM IS NOT A MEDIASTREAM');
+            console.log(typeof stream);
+            console.log(stream);
+            return;
+        }
+
         // setup audio analyser
         const audioCtx = new AudioContext();
         const analyser = audioCtx.createAnalyser();

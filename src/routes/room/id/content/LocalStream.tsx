@@ -7,7 +7,7 @@ import { useLocalSettingsContext } from "../../../components/LocalSettingsContex
 export default function LocalStream() {
 
     const { username } = useLocalSettingsContext();
-    const { room } = useSocketContext();
+    const { socketRef } = useSocketContext();
     const { streamRef, streamReady } = useLocalStreamContext();
 
     const [stream, setStream] = useState<MediaStream | null>(null);
@@ -22,7 +22,7 @@ export default function LocalStream() {
 
     return (
         <>
-            {stream && <VideoAudioChat username={username} stream={stream} room={room} />}
+            {stream && <VideoAudioChat username={username} stream={stream} socketId={socketRef?.current?.id ?? ''} />}
         </>
     );
 }

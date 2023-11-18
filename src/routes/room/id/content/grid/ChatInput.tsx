@@ -127,14 +127,15 @@ export default function ChatInput({ show, overlay }: ChatInput) {
             />
 
 
-            <Button component="div" variant="contained"
+            <Button component="div" variant="contained" tabIndex={-1}
                 sx={{
                     position: 'absolute', right: '0', bottom: '0',
                     height: '100%',
                     borderRadius: overlay ? 0 : '0 4px 4px 0',
                     paddingLeft: overlay ? '8px' : '32px',
                     paddingRight: overlay ? 'calc(32px + 16px)' : '32px',
-                    paddingY: 0
+                    paddingY: 0,
+
                 }}
             >
                 <NoteAddIcon />

@@ -116,8 +116,9 @@ export function SocketContextProvider({ children, room }: SocketContextProvider)
 
 
         // socket cleanup
+        const roomName = room.name;
         return () => {
-            console.log(`SOCKET DISCONNECTING`);
+            console.log(`SOCKET DISCONNECTING from the room ${roomName}`);
 
             socketRef.current?.disconnect();
         };
