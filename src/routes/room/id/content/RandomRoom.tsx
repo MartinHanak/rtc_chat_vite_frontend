@@ -112,6 +112,7 @@ export default function RandomRoom() {
         <Box
             sx={{
                 position: 'absolute',
+                zIndex: 100,
                 top: '48px', right: 0,
                 backgroundColor: theme => mode === 'light' ? theme.palette.error.light : theme.palette.error.main,
                 cursor: 'pointer',
