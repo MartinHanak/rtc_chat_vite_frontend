@@ -136,7 +136,6 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
             if (!(toSocketId in peerStreamRef.current)) {
                 console.log(`Adding a peer stream`);
 
-                const videoTrack = event.streams[0].getVideoTracks()[0];
                 const audioTrack = event.streams[0].getAudioTracks()[0];
 
                 const audioContext = new AudioContext();
@@ -150,7 +149,14 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
 
                 const modifiedAudioTrack = destination.stream.getAudioTracks()[0];
 
-                const modifiedMediaStream = new MediaStream([videoTrack, modifiedAudioTrack]);
+                let modifiedMediaStream: MediaStream;
+
+                if (video) {
+                    const videoTrack = event.streams[0].getVideoTracks()[0];
+                    modifiedMediaStream = new MediaStream([videoTrack, modifiedAudioTrack]);
+                } else {
+                    modifiedMediaStream = new MediaStream([modifiedAudioTrack]);
+                }
 
                 gainNodeRef.current[toSocketId] = gainNode;
                 peerStreamRef.current[toSocketId] = modifiedMediaStream;
@@ -160,7 +166,7 @@ export function WebRTCContextProvider({ children }: WebRTCContextProvider) {
         };
 
         return connection;
-    }, [socketRef]);
+    }, [socketRef, video]);
 
 
     // creating a WebRTC offer = calling
