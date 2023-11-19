@@ -8,6 +8,7 @@ import GridDisplayControls from "./GridDisplayControls";
 import useDisplayControls from "./hooks/useDisplayControls";
 import ChatOverlay from "./ChatOverlay";
 import InitialAlert from "./InitialAlert";
+import Users from "../Users";
 
 
 export default function GridView() {
@@ -32,6 +33,8 @@ export default function GridView() {
                 <SideGrid streams={streams} offset={show ? height : 0} />
 
                 <ChatOverlay offset={show ? height : 0} overlay={true} />
+
+                <Users offset={show ? height : 0} />
 
                 <GridDisplayControls streams={streams} setHeight={setHeight} height={height} toggle={toggle} show={show} changeUserDisplayState={changeUserDisplayState} />
             </Box>
