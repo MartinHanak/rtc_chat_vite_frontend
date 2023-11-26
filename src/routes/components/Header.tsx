@@ -4,12 +4,14 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 import { LocalSettingsModal } from "./LocalSettingsModal";
 import RandomRoom from "../room/id/content/RandomRoom";
 import { useLocalSettingsContext } from "./LocalSettingsContext";
+import { useAvailableRoomsContext } from "./AvailableRoomsContext";
 
 export default function Header() {
     const location = useLocation();
     const pathnames = ["", ...location.pathname.split('/').filter((x) => x)];
 
     const { displayRandomRoom } = useLocalSettingsContext();
+    const { rooms } = useAvailableRoomsContext();
 
     return (
         <Box sx={{ width: 1, position: 'absolute', top: 0, left: 0 }}>
@@ -47,7 +49,7 @@ export default function Header() {
                     <LocalSettingsModal />
 
 
-                    {displayRandomRoom !== 'false' &&
+                    {displayRandomRoom !== 'false' && rooms.length > 1 &&
                         <RandomRoom />
                     }
                 </Stack>
