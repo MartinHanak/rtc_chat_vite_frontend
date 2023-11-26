@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

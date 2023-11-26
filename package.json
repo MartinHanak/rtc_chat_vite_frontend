@@ -20,6 +20,8 @@
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.9",
     "@types/hex-rgb": "^4.1.1",
+    "countries-list": "^3.0.6",
+    "flag-icons": "^7.0.2",
     "friendly-username-generator": "^2.0.4",
     "hex-rgb": "^5.0.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@edge-runtime/vm": "^3.1.7",
+    "@types/iso-3166-1-alpha-2": "^1.0.2",
     "@types/node": "^20.6.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
