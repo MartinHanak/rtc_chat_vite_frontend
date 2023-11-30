@@ -12,12 +12,14 @@ import HeaderFiller from "../../components/HeaderFiller";
 import InfoIcon from '@mui/icons-material/Info';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { getEmojiFlag, getCountryDataList, languages } from "countries-list";
+import RoomTags from "./RoomTags";
 
 export default function NewRoomRoute() {
     const [name, setName] = useState<string>('');
     const [type, setType] = useState<RoomType>('video');
     const [language, setLanguage] = useState<string>('');
     const [description, setDescription] = useState<string>('');
+    const [tags, setTags] = useState<string[]>([]);
     const [privateRoom, setPrivateRoom] = useState<boolean>(false);
 
     const [open, setOpen] = useState(false);
@@ -85,6 +87,10 @@ export default function NewRoomRoute() {
 
     function handleLanguageChange(e: SelectChangeEvent<string>) {
         setLanguage(e.target.value);
+    }
+
+    function handleTagsChange(value: string[]) {
+        setTags(value);
     }
 
     return (
@@ -229,6 +235,8 @@ export default function NewRoomRoute() {
                     sx={{
                         width: 1
                     }} />
+
+                <RoomTags tags={tags} handleTagsChange={handleTagsChange} />
 
                 <Stack direction={"row"} justifyContent={"start"} alignItems={"center"}>
                     <FormControlLabel
