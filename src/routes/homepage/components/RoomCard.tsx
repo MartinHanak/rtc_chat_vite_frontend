@@ -11,6 +11,7 @@ import RoomCardContent from "./RoomCardContent";
 import RoomCardActions from "./RoomCardActions";
 import { possibleColors } from "../../../types/mui";
 
+
 const typeToIcon: Record<RoomType, React.ReactNode> = {
     'video': <VideoChatIcon sx={{ fontSize: 80, color: "primary.dark" }} />,
     'audio': <VoiceChatIcon sx={{ fontSize: 80, color: "secondary.dark" }} />,
@@ -117,7 +118,7 @@ export default function RoomCard({ room }: RoomCard) {
 
                 <RoomCardContent name={room.name} description={room.description} maxCharLimit={maxCharLimit} />
 
-                <RoomCardActions showMore={showMore} time={room.createdAt} toggleModal={toggleModal} color={getColor(room.type)} />
+                <RoomCardActions showMore={showMore} time={room.createdAt} toggleModal={toggleModal} color={getColor(room.type)} language={'test'} />
 
                 <Modal
                     open={showModal}

@@ -17,7 +17,7 @@ import RoomTags from "./RoomTags";
 export default function NewRoomRoute() {
     const [name, setName] = useState<string>('');
     const [type, setType] = useState<RoomType>('video');
-    const [language, setLanguage] = useState<string>('');
+    const [country, setCountry] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [tags, setTags] = useState<string[]>([]);
     const [privateRoom, setPrivateRoom] = useState<boolean>(false);
@@ -51,6 +51,14 @@ export default function NewRoomRoute() {
             return;
         }
 
+        let language = '';
+        countries.forEach((option) => {
+            if (option.name === country) {
+                const langCode = option.languages[0];
+                language = languages[langCode].name;
+            }
+        });
+
 
         fetch(`${BACKEND_URL}/api/room`, {
             method: "POST",
@@ -61,7 +69,8 @@ export default function NewRoomRoute() {
                 name: encodeURIComponent(inputName),
                 type,
                 description,
-                country: language,
+                country,
+                language,
                 tags,
                 privateRoom,
             })
@@ -87,8 +96,8 @@ export default function NewRoomRoute() {
         }
     }
 
-    function handleLanguageChange(e: SelectChangeEvent<string>) {
-        setLanguage(e.target.value);
+    function handleCountryChange(e: SelectChangeEvent<string>) {
+        setCountry(e.target.value);
     }
 
     function handleTagsChange(value: string[]) {
@@ -196,9 +205,9 @@ export default function NewRoomRoute() {
                         defaultValue=""
                         labelId="language-select-label"
                         id="language-select"
-                        value={language}
+                        value={country}
                         label="Language"
-                        onChange={handleLanguageChange}
+                        onChange={handleCountryChange}
                         sx={{
                             width: 1,
                             '& .MuiSelect-select': {

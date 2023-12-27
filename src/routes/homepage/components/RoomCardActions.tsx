@@ -5,12 +5,13 @@ import { possibleColors } from "../../../types/mui";
 interface RoomCardActions {
     showMore: boolean;
     time: number;
+    language: string | null;
     toggleModal: () => void;
     color: possibleColors;
 }
 
 
-export default function RoomCardActions({ showMore, time, toggleModal, color }: RoomCardActions) {
+export default function RoomCardActions({ showMore, time, language, toggleModal, color }: RoomCardActions) {
 
     const toggleModalWithoutPropagation = (e: MouseEvent<HTMLDivElement>) => {
         console.log('Toggle modal');
@@ -37,6 +38,9 @@ export default function RoomCardActions({ showMore, time, toggleModal, color }: 
             <Box>
                 <Typography variant="subtitle2" component={"div"} color="text.disabled">
                     {formattedDate}
+                    {language && <Typography variant="subtitle2" component="span" color="text.disabled" sx={{ marginLeft: 1 }}>
+                        {language}
+                    </Typography>}
                 </Typography>
             </Box>
 

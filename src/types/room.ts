@@ -5,8 +5,11 @@ export const roomTypes: RoomType[] = ["video", "audio", "text"];
 export interface Room {
   name: string;
   type: RoomType;
+  country: string;
+  language: string;
   description: string;
   createdAt: number;
+  tags: string[];
   privateRoom: boolean;
 }
 
