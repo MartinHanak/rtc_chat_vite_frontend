@@ -61,7 +61,9 @@ export default function NewRoomRoute() {
                 name: encodeURIComponent(inputName),
                 type,
                 description,
-                privateRoom
+                country: language,
+                tags,
+                privateRoom,
             })
         }).then((res) => {
             if (res.ok) {
