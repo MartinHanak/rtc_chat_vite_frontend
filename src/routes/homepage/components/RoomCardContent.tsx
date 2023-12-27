@@ -1,14 +1,16 @@
 import { CardContent, Tooltip, Typography } from "@mui/material";
 import { useMemo } from "react";
+import RoomTags from "./RoomTags";
 
 interface RoomCardContent {
     name: string;
     description: string;
+    tags: string[];
     maxCharLimit: number;
 }
 
 
-export default function RoomCardContent({ name, description, maxCharLimit }: RoomCardContent) {
+export default function RoomCardContent({ name, description, tags, maxCharLimit }: RoomCardContent) {
 
     const showMore = useMemo(() => {
         if (description.length > maxCharLimit) {
@@ -32,6 +34,7 @@ export default function RoomCardContent({ name, description, maxCharLimit }: Roo
 
 
 
+
             <Typography
                 variant="body2" color="text.secondary" component="div"
                 sx={{
@@ -46,7 +49,7 @@ export default function RoomCardContent({ name, description, maxCharLimit }: Roo
             </Typography>
 
 
-
+            <RoomTags tags={tags} />
 
         </CardContent>
 

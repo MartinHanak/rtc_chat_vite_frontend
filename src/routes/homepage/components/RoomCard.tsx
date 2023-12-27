@@ -64,7 +64,7 @@ export default function RoomCard({ room }: RoomCard) {
     const [showModal, setShowModal] = useState(false);
 
     const showMore = useMemo(() => {
-        if (room.description.length > maxCharLimit) {
+        if (room.description.length > maxCharLimit || room.tags.length > 0) {
             return true;
         } else {
             return false;
@@ -116,9 +116,9 @@ export default function RoomCard({ room }: RoomCard) {
                     {room.type && typeToIcon[room.type]}
                 </StyledRoomCardHeader>
 
-                <RoomCardContent name={room.name} description={room.description} maxCharLimit={maxCharLimit} />
+                <RoomCardContent name={room.name} description={room.description} maxCharLimit={maxCharLimit} tags={[]} />
 
-                <RoomCardActions showMore={showMore} time={room.createdAt} toggleModal={toggleModal} color={getColor(room.type)} language={'test'} />
+                <RoomCardActions showMore={showMore} time={room.createdAt} toggleModal={toggleModal} color={getColor(room.type)} language={room.language} />
 
                 <Modal
                     open={showModal}
@@ -141,7 +141,9 @@ export default function RoomCard({ room }: RoomCard) {
                             {room.type && typeToIcon[room.type]}
                         </StyledRoomCardHeader>
 
-                        <RoomCardContent name={room.name} description={room.description} maxCharLimit={1000} />
+                        <RoomCardContent name={room.name} description={room.description} maxCharLimit={1000} tags={room.tags} />
+
+                        <RoomCardActions showMore={false} time={room.createdAt} toggleModal={toggleModal} color={getColor(room.type)} language={room.language} />
                     </Box>
                 </Modal>
 
