@@ -34,7 +34,7 @@ export default function RoomCardActions({ showMore, time, language, toggleModal,
 
 
     return (
-        <CardActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingX: 2 }}>
+        <CardActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingX: 2, minHeight: '53px' }}>
             <Box>
                 <Typography variant="subtitle2" component={"div"} color="text.disabled">
                     {formattedDate}

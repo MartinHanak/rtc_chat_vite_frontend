@@ -28,7 +28,10 @@ export default function RoomList({ filterItems, selectedTypes }: RoomList) {
 
         return roomsFilteredByType.filter((room) => {
             if (filterItems.length > 0) {
-                return filterItems.some((item) => room.name.includes(item) || room.description.includes(item));
+                return filterItems.every((item) => room.name.includes(item) ||
+                    room.description.includes(item) ||
+                    room.tags.includes(item) ||
+                    room.language.includes(item));
             } else {
                 return true;
             }

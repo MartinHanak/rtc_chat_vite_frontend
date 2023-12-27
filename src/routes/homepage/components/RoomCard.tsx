@@ -123,6 +123,9 @@ export default function RoomCard({ room }: RoomCard) {
                 <Modal
                     open={showModal}
                     onClose={handleCloseModal}
+                    sx={{
+                        overflowY: 'auto'
+                    }}
                 >
                     <Box
                         component={Card}
@@ -130,7 +133,6 @@ export default function RoomCard({ room }: RoomCard) {
                         sx={{
                             width: '100%',
                             maxWidth: '320px',
-                            height: 'min-content',
                             display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'stretch',
                             position: 'absolute',
                             top: '50%',
