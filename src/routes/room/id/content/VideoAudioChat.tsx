@@ -8,9 +8,10 @@ interface VideoAudioChat {
     username: string;
     socketId: string;
     stream: MediaStream;
+    muted?: boolean;
 }
 
-export default function VideoAudioChat({ username, socketId, stream }: VideoAudioChat) {
+export default function VideoAudioChat({ username, socketId, stream, muted }: VideoAudioChat) {
 
     const { room } = useSocketContext();
 
@@ -22,9 +23,9 @@ export default function VideoAudioChat({ username, socketId, stream }: VideoAudi
                 <VolumeControls socketId={socketId} />
             </Typography>
 
-            {room.type === 'video' && <Video stream={stream} />}
+            {room.type === 'video' && <Video muted={muted} stream={stream} />}
 
-            {room.type === 'audio' && <AudioFrequencyVisual stream={stream} />}
+            {room.type === 'audio' && <AudioFrequencyVisual muted={muted} stream={stream} />}
 
         </Box>
     );

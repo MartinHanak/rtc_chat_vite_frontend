@@ -3,6 +3,7 @@ import { combinedUserState } from "../../../../../types/user";
 import VideoAudioChat from "../VideoAudioChat";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
+import { useLocalStreamContext } from "../../context/LocalStreamProvider";
 
 interface MainGridItem {
     dragId: string;
@@ -19,6 +20,8 @@ export default function MainGridItem({ dragId, width, streamInfo }: MainGridItem
         transition,
     } = useSortable({ id: dragId });
 
+    const { streamRef } = useLocalStreamContext();
+
     return (
         <Grid item
             xs={width}
@@ -29,7 +32,7 @@ export default function MainGridItem({ dragId, width, streamInfo }: MainGridItem
                 transform: CSS.Transform.toString(transform),
                 transition,
             }}>
-            <VideoAudioChat username={streamInfo.username} socketId={streamInfo.socketId} stream={streamInfo.stream} />
+            <VideoAudioChat username={streamInfo.username} socketId={streamInfo.socketId} stream={streamInfo.stream} muted={streamInfo.stream === streamRef?.current} />
         </Grid>
     );
 }

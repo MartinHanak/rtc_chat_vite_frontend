@@ -3,9 +3,10 @@ import { useEffect, useRef } from "react";
 
 interface Video {
     stream: MediaStream;
+    muted?: boolean;
 }
 
-export function Video({ stream }: Video) {
+export function Video({ stream, muted }: Video) {
 
     const localRef = useRef<HTMLVideoElement | null>(null);
 
@@ -16,6 +17,6 @@ export function Video({ stream }: Video) {
     }, [stream]);
 
     return (
-        <Box component='video' ref={localRef} autoPlay width='100%' height='100%' ></Box>
+        <Box component='video' muted={muted} ref={localRef} autoPlay width='100%' height='100%' ></Box>
     );
 }

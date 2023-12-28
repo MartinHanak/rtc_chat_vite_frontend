@@ -3,9 +3,10 @@ import { useLocalSettingsContext } from "../../../components/LocalSettingsContex
 
 interface AudioFrequencyVisual {
     stream: MediaStream;
+    muted?: boolean;
 }
 
-export function AudioFrequencyVisual({ stream }: AudioFrequencyVisual) {
+export function AudioFrequencyVisual({ stream, muted }: AudioFrequencyVisual) {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { mode } = useLocalSettingsContext();
