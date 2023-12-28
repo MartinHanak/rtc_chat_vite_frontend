@@ -12,18 +12,12 @@ export default function VolumeControls({ socketId }: VolumeControls) {
 
     const { gainNodes } = useWebRTCContext();
 
-    const [gainExponent, setGainExponent] = useState<number>(() => {
-        if (gainNodes && gainNodes.current && socketId in gainNodes.current) {
-            return Math.log10(gainNodes.current[socketId].gain.value);
-        } else {
-            return 1;
-        }
-    });
+    const [gainExponent, setGainExponent] = useState<number>(1);
 
     useEffect(() => {
-        console.log(socketId);
+        console.log('gain change');
         if (gainNodes && gainNodes.current && socketId in gainNodes.current) {
-            gainNodes.current[socketId].gain.value = 10 ** gainExponent;
+            gainNodes.current[socketId].gain.value = 2 ** gainExponent - 1;
         }
     }, [gainExponent, gainNodes, socketId]);
 
@@ -33,7 +27,7 @@ export default function VolumeControls({ socketId }: VolumeControls) {
 
     return (<Stack spacing={2} direction="row" alignItems={"center"}>
         <VolumeDown />
-        <Slider aria-label="Volume" min={0} step={0.05} max={2} value={gainExponent} onChange={handleChange} />
+        <Slider aria-label="Volume" min={0} step={0.05} max={Math.log2(10)} value={gainExponent} onChange={handleChange} />
         <VolumeUp />
     </Stack>);
 }
