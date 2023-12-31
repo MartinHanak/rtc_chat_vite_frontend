@@ -2,7 +2,7 @@ import { Breadcrumbs, Stack, Link, Container, Box } from "@mui/material";
 import HomeIcon from '@mui/icons-material/Home';
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { LocalSettingsModal } from "./LocalSettingsModal";
-import RandomRoom from "../room/id/content/RandomRoom";
+import RandomRoom from "../room/id/components/content/grid_overlay/RandomRoom";
 import { useLocalSettingsContext } from "./LocalSettingsContext";
 import { useAvailableRoomsContext } from "./AvailableRoomsContext";
 

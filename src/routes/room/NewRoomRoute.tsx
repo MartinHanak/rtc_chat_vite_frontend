@@ -12,7 +12,7 @@ import HeaderFiller from "../../components/HeaderFiller";
 import InfoIcon from '@mui/icons-material/Info';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { getEmojiFlag, getCountryDataList, languages } from "countries-list";
-import RoomTags from "./RoomTags";
+import RoomTags from "./components/RoomTags";
 
 export default function NewRoomRoute() {
     const [name, setName] = useState<string>('');
