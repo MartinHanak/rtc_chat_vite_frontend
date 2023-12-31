@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useLocalSettingsContext } from "../../../../../components/LocalSettingsContext";
+import { Audio } from "./Audio";
 
 interface AudioFrequencyVisual {
     stream: MediaStream;
@@ -162,6 +163,9 @@ export function AudioFrequencyVisual({ stream, muted }: AudioFrequencyVisual) {
 
 
     return (
-        <canvas ref={canvasRef} width={500} height={200} />
+        <>
+            <canvas ref={canvasRef} width={500} height={200} />
+            <Audio stream={stream} muted={muted} />
+        </>
     );
 }
