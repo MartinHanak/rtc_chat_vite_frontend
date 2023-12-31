@@ -1,5 +1,5 @@
 import { Box, Button, Container, Tooltip } from "@mui/material";
-import { combinedUserState, displayState } from "../../../../../../types/user";
+import { combinedUserState, displayState } from "../../../../../../../types/user";
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import { useEffect, useRef, useState } from "react";
 import StreamDisplayControl from "./StreamDisplayControl";

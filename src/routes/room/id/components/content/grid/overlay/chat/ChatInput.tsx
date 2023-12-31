@@ -1,7 +1,7 @@
 import { Box, Button, Stack, TextField } from "@mui/material";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { useSocketContext } from "../../context/SocketContext";
-import { useWebRTCMessagesContext } from "../../context/WebRTCMessagesContext";
+import { useSocketContext } from "../../../../context/SocketContext";
+import { useWebRTCMessagesContext } from "../../../../context/WebRTCMessagesContext";
 
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import FileChip from "./FileChip";

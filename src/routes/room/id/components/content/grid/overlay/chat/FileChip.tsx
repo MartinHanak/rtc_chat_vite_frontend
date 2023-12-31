@@ -1,6 +1,6 @@
 import { Box, Card, Chip, IconButton, Stack } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
-import { formatFileSize } from "../../../../../../util/format";
+import { formatFileSize } from "../../../../../../../../util/format";
 
 interface FileChip {
     fileName: string;

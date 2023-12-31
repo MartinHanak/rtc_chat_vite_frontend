@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useWebRTCContext } from "../../context/WebRTCContext";
+import { useWebRTCContext } from "../../../context/WebRTCContext";
 import { Slider, Stack } from "@mui/material";
 import VolumeDown from '@mui/icons-material/VolumeDown';
 import VolumeUp from '@mui/icons-material/VolumeUp';

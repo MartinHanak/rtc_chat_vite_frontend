@@ -1,5 +1,5 @@
-import Users from "../grid_overlay/Users";
-import ChatOverlay from "../grid/ChatOverlay";
+import Users from "../grid/overlay/Users";
+import ChatOverlay from "../grid/overlay/chat/ChatOverlay";
 
 export function TextChat() {
 

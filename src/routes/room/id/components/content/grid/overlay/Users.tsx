@@ -1,5 +1,5 @@
 import { Badge, Box, Card, IconButton, Stack } from "@mui/material";
-import { useSocketContext } from "../../context/SocketContext";
+import { useSocketContext } from "../../../context/SocketContext";
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import { useState } from "react";
 

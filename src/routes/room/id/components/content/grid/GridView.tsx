@@ -2,13 +2,13 @@ import useGridLayoutSettings from "./hooks/useGridLayoutSettings";
 import MainGrid from "./MainGrid";
 import useCombinedDisplayStreamState from "./hooks/useCombinedDisplayStreamState";
 import { Box } from "@mui/material";
-import LayoutControls from "./LayoutControls";
+import LayoutControls from "./controls/LayoutControls";
 import SideGrid from "./SideGrid";
-import GridDisplayControls from "./GridDisplayControls";
+import GridDisplayControls from "./controls/GridDisplayControls";
 import useDisplayControls from "./hooks/useDisplayControls";
-import ChatOverlay from "./ChatOverlay";
-import InitialAlert from "./InitialAlert";
-import Users from "../grid_overlay/Users";
+import ChatOverlay from "./overlay/chat/ChatOverlay";
+import InitialAlert from "./overlay/InitialAlert";
+import Users from "./overlay/Users";
 
 
 export default function GridView() {

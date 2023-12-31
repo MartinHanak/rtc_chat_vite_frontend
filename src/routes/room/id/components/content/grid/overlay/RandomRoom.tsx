@@ -1,12 +1,12 @@
 import { Box, Checkbox, FormControlLabel, IconButton, Stack, Typography } from "@mui/material";
-import { useAvailableRoomsContext } from "../../../../../components/AvailableRoomsContext";
+import { useAvailableRoomsContext } from "../../../../../../components/AvailableRoomsContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from "react";
-import { useLocalSettingsContext } from "../../../../../components/LocalSettingsContext";
+import { useLocalSettingsContext } from "../../../../../../components/LocalSettingsContext";
 import { nanoid } from "nanoid";
-import { RoomType } from "../../../../../../types/room";
-import { BACKEND_URL } from "../../../../../../util/config";
+import { RoomType } from "../../../../../../../types/room";
+import { BACKEND_URL } from "../../../../../../../util/config";
 
 
 export default function RandomRoom() {

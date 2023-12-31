@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { Video } from "./Video";
 import { AudioFrequencyVisual } from "./AudioFrequencyVisual";
 import { useSocketContext } from "../../context/SocketContext";
-import VolumeControls from "../grid/VolumeControls";
+import VolumeControls from "./overlay/VolumeControls";
 
 interface VideoAudioChat {
     username: string;

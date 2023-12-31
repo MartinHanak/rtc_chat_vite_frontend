@@ -1,5 +1,5 @@
 import { Card, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from "@mui/material";
-import { combinedUserState, displayState } from "../../../../../../types/user";
+import { combinedUserState, displayState } from "../../../../../../../types/user";
 
 import ViewSidebarRoundedIcon from '@mui/icons-material/ViewSidebarRounded';
 import ViewModuleRoundedIcon from '@mui/icons-material/ViewModuleRounded';

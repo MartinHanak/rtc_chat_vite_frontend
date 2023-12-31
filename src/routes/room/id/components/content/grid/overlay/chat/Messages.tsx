@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
 import TextMessage from "./TextMessage";
 import { useEffect, useMemo, useRef } from "react";
-import { useWebRTCMessagesContext } from "../../context/WebRTCMessagesContext";
-import { fileMessage, textMessage } from "../../../../../components/AvailableRoomsContext";
-import { isFileMessage, isTextMessage } from "../../../../../../types/message";
+import { useWebRTCMessagesContext } from "../../../../context/WebRTCMessagesContext";
+import { fileMessage, textMessage } from "../../../../../../../components/AvailableRoomsContext";
+import { isFileMessage, isTextMessage } from "../../../../../../../../types/message";
 import FileMessage from "./FileMessage";
 
 interface Messages {
